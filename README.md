@@ -14,17 +14,14 @@
 - 日间 / 夜间两种配色
 - 成绩保存在本机浏览器，可导出、导入 JSON 备份
 
-## 部署到 GitHub Pages
+## 部署（Cloudflare Pages）
 
-1. 在 GitHub 新建仓库，例如 `cw-trainer`，把 `index.html`、`CNAME`、`README.md` 三个文件上传到 `main` 分支根目录。
-2. 打开仓库 **Settings → Pages**，Source 选 **Deploy from a branch**，分支选 `main`，目录选 `/ (root)`，保存。
-3. 在域名服务商的 DNS 里给 `ba8blk.com` 添加一条记录：
-   - 类型：`CNAME`
-   - 主机记录：`cw`
-   - 记录值：`<你的 GitHub 用户名>.github.io`
-4. 回到 **Settings → Pages**，Custom domain 填 `cw.ba8blk.com`（`CNAME` 文件已写好，一般会自动填上），等 DNS 检查通过后勾选 **Enforce HTTPS**。
+1. 在 GitHub 的 Cloudflare Workers and Pages 应用设置里，确认已授权 `cw-trainer` 仓库。
+2. Cloudflare 后台：Workers & Pages → 创建 → Pages → 连接到 Git，选择 `iamfuhui/cw-trainer`。
+3. 构建设置：框架预设选"无"，构建命令留空，输出目录填 `/`，保存并部署。
+4. 部署完成后，在项目的"自定义域"中添加 `cw.ba8blk.com`，DNS 记录和证书由 Cloudflare 自动处理。
 
-DNS 生效通常需要几分钟到几小时。生效前可以先用 `https://<用户名>.github.io/cw-trainer/` 访问测试。
+之后推送到 `main` 分支，Cloudflare 会自动重新部署。
 
 ## 手机使用提示
 
