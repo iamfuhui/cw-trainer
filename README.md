@@ -14,14 +14,14 @@
 - 日间 / 夜间两种配色
 - 成绩保存在本机浏览器，可导出、导入 JSON 备份
 
-## 部署（Cloudflare Pages）
+## 部署（Cloudflare Workers 静态资源）
 
-1. 在 GitHub 的 Cloudflare Workers and Pages 应用设置里，确认已授权 `cw-trainer` 仓库。
-2. Cloudflare 后台：Workers & Pages → 创建 → Pages → 连接到 Git，选择 `iamfuhui/cw-trainer`。
-3. 构建设置：框架预设选"无"，构建命令留空，输出目录填 `/`，保存并部署。
-4. 部署完成后，在项目的"自定义域"中添加 `cw.ba8blk.com`，DNS 记录和证书由 Cloudflare 自动处理。
+仓库已连接 Cloudflare Workers，推送到 `main` 分支后自动部署：
 
-之后推送到 `main` 分支，Cloudflare 会自动重新部署。
+- 默认地址：https://cw-trainer.fuhui.workers.dev
+- 自定义域：`cw.ba8blk.com`（在 Workers 项目的"设置 → 域和路由"中添加）
+- `wrangler.jsonc`：部署配置，静态资源目录为仓库根目录
+- `.assetsignore`：排除 `.git`、`README.md` 等不需要公开发布的文件
 
 ## 手机使用提示
 
