@@ -11,13 +11,14 @@
 <style>
 :root{
   --bg:#2B2D31;--sf:#35373C;--key:#41444A;--keyOn:#4E5259;--bd:#4D5057;--tx:#ECEDEF;--sub:#A9ADB4;
-  --ac:#F2A33A;--acTx:#1E1F22;--acSoft:#4A3D2A;--err:#FF8A80;--errBg:#5A3634;--ok:#7FD1A8;--track:#4D5057;
+  --ac:#F2A33A;--acTx:#1E1F22;--acSoft:#4A3D2A;--err:#FF8A80;--errBg:#5A3634;--ok:#7FD1A8;--okBg:#2F3F38;--ring:#3A352C;--track:#4D5057;
 }
 [data-theme=light]{
   --bg:#F3F4F6;--sf:#FFFFFF;--key:#FFFFFF;--keyOn:#E6E8EC;--bd:#D5D8DD;--tx:#1E2125;--sub:#5C626B;
-  --ac:#B45309;--acTx:#FFFFFF;--acSoft:#FCEBD7;--err:#C62828;--errBg:#FDE2E1;--ok:#2E7D32;--track:#E2E5E9;
+  --ac:#B45309;--acTx:#FFFFFF;--acSoft:#FCEBD7;--err:#C62828;--errBg:#FDE2E1;--ok:#2E7D32;--okBg:#E3F2E5;--ring:#FBEEDD;--track:#E2E5E9;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none !important}
 html,body{margin:0;background:var(--bg);color:var(--tx);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif}
 body{min-height:100dvh;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -105,6 +106,40 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
 .ac.bad .r{color:var(--err)}
 .legend{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--errBg);border:1px solid var(--err);vertical-align:-1px;margin-right:6px}
 
+/* 模式切换 */
+.modeTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;
+  background:var(--sf);border:1px solid var(--bd);flex-grow:1}
+.modeTabs button{height:38px;border-radius:10px;border:0;background:transparent;color:var(--sub);font-size:15px}
+.modeTabs button.sel{background:var(--ac);color:var(--acTx);font-weight:700}
+body.mm .copyOnly{display:none !important}
+
+/* 反应训练 */
+#sMM{gap:14px}
+.mmStats{text-align:center}
+.mmStats b{display:block;font-size:20px}
+.mmStats span{font-size:12px;color:var(--sub)}
+.mmStage{flex-direction:column;gap:14px;min-height:200px}
+.mmCircle{width:150px;height:150px;border-radius:75px;border:2px solid var(--ac);background:var(--sf);color:var(--ac);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0;
+  box-shadow:0 0 0 10px var(--ring);font-size:15px}
+.mmCircle small{font-size:14px;color:var(--sub)}
+.mmCircle.wrong{border-color:var(--err);background:var(--errBg);color:var(--err);box-shadow:none;font-weight:700}
+.mmCircle.idle{color:var(--tx);font-weight:700}
+#mmMsg{font-size:14px;color:var(--sub);text-align:center;min-height:20px}
+#mmMsg.bad{color:var(--err)}
+.mmUnlock{width:100%;max-width:320px;padding:18px;border-radius:16px;border:2px solid var(--ok);background:var(--okBg);
+  display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}
+.mmUnlock .btn{height:46px}
+.mmBars{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px 14px;margin-top:8px}
+.mb{display:flex;align-items:center;gap:8px}
+.mb .ch{font-size:17px;font-weight:700;width:16px}
+.mb .w{flex-grow:1;display:flex;flex-direction:column;gap:4px}
+.mb .tr{height:6px;border-radius:3px;background:var(--track);overflow:hidden}
+.mb .tr i{display:block;height:100%}
+.mb small{font-size:11px;color:var(--sub)}
+.key.good{background:var(--okBg);border-color:var(--ok)}
+.key.bad{background:var(--errBg);border-color:var(--err)}
+
 /* ---------- 桌面布局：宽度 ≥ 900px ---------- */
 .d-only{display:none !important}
 @media (min-width:900px){
@@ -138,13 +173,18 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
   .resBottom{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
   .screen:not(#sSetup) .resBottom .card{background:transparent}
   #idleLetters{font-size:44px;letter-spacing:10px}
+  .topbar .modeTabs{display:flex;flex-grow:0;border-radius:12px}
+  .topbar .modeTabs button{height:34px;padding:0 18px;font-size:14px;border-radius:9px}
+  .mmStats{display:flex;gap:28px;text-align:left}
+  .mmStats b{font-size:26px}
 }
 </style>
 </head>
 <body>
 
 <header class="topbar d-only">
-  <div style="display:flex;align-items:baseline;gap:12px"><div class="title" style="margin:0">CW 听抄练习</div><div class="eyebrow">Koch 法 · 共 40 课</div></div>
+  <div style="display:flex;align-items:center;gap:18px"><div class="title" style="margin:0">CW 练习</div>
+    <div class="modeTabs"><button data-mode="copy">听抄</button><button data-mode="mm">反应训练</button></div></div>
   <div style="display:flex;gap:8px">
     <button class="btn" data-go="sArchive">我的档案</button>
     <button class="round themeBtn" aria-label="切换日间/夜间"></button>
@@ -155,6 +195,7 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
 
 <!-- ============ 1 设置 ============ -->
 <section class="screen on" id="sSetup">
+  <div class="modeTabs m-only"><button data-mode="copy">听抄</button><button data-mode="mm">反应训练</button></div>
   <div class="head m-only">
     <div><div class="eyebrow">Koch 听抄练习</div><div class="title">练习设置</div></div>
     <div style="display:flex;gap:8px">
@@ -173,7 +214,7 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
     <select class="pick" id="lessonPick" aria-label="选择课程"></select>
   </div>
 
-  <div>
+  <div class="copyOnly">
     <div class="label">每组时长</div>
     <div class="grid3" id="durPick">
       <button class="chip" data-dur="30">30 秒</button>
@@ -189,7 +230,7 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
         <div class="v mono"><span id="v_cwpm">20</span><small>wpm</small></div>
         <button data-adj="cwpm" data-d="1" aria-label="增大字符速度">+</button></div>
     </div>
-    <div class="row">
+    <div class="row copyOnly">
       <div><div>有效速度</div><div class="hint">字母之间留多久</div></div>
       <div class="step"><button data-adj="ewpm" data-d="-1" aria-label="减小有效速度">−</button>
         <div class="v mono"><span id="v_ewpm">10</span><small>wpm</small></div>
@@ -204,7 +245,7 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
     <div style="margin-top:16px"><button class="btn small" id="btnPreview">试听当前设置</button></div>
   </div>
 
-  <div class="card d-only"><div class="label">本课最近成绩</div><div id="recentList"></div></div>
+  <div class="card d-only copyOnly"><div class="label">本课最近成绩</div><div id="recentList"></div></div>
 
   <div class="spacer m-only"></div>
   <div class="last m-only" id="lastScore"></div>
@@ -277,6 +318,46 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
   <div class="spacer"></div>
 </section>
 
+<!-- ============ 反应训练 ============ -->
+<section class="screen" id="sMM">
+  <div class="head m-only">
+    <div class="modeTabs"><button data-mode="copy">听抄</button><button data-mode="mm">反应训练</button></div>
+    <button class="round themeBtn" aria-label="切换日间/夜间"></button>
+  </div>
+  <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
+    <div class="grid2">
+      <button class="chip" id="mmSyncBtn">同步学习进度</button>
+      <button class="chip" id="mmManBtn">自选课程</button>
+    </div>
+    <select class="pick" id="mmLessonPick" aria-label="选择反应训练的课程" style="width:100%"></select>
+    <div class="row" style="font-size:13px;color:var(--sub)"><div id="mmLessonInfo"></div><div id="mmSpeedInfo"></div></div>
+  </div>
+  <div class="grid3 mmStats">
+    <div><b class="mono" id="mmCount">0</b><span>已答</span></div>
+    <div><b class="mono" id="mmAcc">–</b><span>一次答对</span></div>
+    <div><b class="mono" id="mmRt" style="color:var(--ac)">–</b><span>平均反应</span></div>
+  </div>
+  <div class="spacer center mmStage">
+    <button class="mmCircle" id="mmCircle" aria-label="重听当前字符"></button>
+    <div id="mmMsg"></div>
+    <div class="mmUnlock" id="mmUnlock" hidden>
+      <div style="font-size:16px;font-weight:700" id="mmUnlockTitle"></div>
+      <div class="hint" id="mmUnlockSub"></div>
+      <button class="btn primary" id="mmNext"></button>
+      <button class="btn" id="mmStay">继续练本课</button>
+    </div>
+  </div>
+  <div class="card" style="padding:12px 14px">
+    <div class="row" style="font-size:12px;color:var(--sub)"><div>错误条（越低越熟）· 平均反应</div><div>门槛 30% · 1.0 s</div></div>
+    <div class="mmBars" id="mmBars"></div>
+  </div>
+  <div class="keys" id="mmKeys"></div>
+  <div class="row">
+    <div class="hint" style="margin:0">答错重听，按对才继续 · 每 20 个自动保存</div>
+    <button class="btn" id="mmEnd" style="width:auto;height:40px;padding:0 18px;font-size:14px;flex:none">结束本次</button>
+  </div>
+</section>
+
 <!-- ============ 4 我的档案 ============ -->
 <section class="screen" id="sArchive">
   <div class="head">
@@ -331,7 +412,8 @@ const Store = {
     return {
       version: 1,
       profile: { callsign: 'BA8BLK' },
-      settings: { lesson: 1, duration: 60, cwpm: 20, ewpm: 10, tone: 600, theme: 'dark' },
+      settings: { lesson: 1, duration: 60, cwpm: 20, ewpm: 10, tone: 600, theme: 'dark', mmSync: true, mmLesson: 1 },
+      mm: { weights: {}, rts: {} },        // 反应训练：每个字符的错误条和最近反应时间
       records: []
     };
   },
@@ -343,6 +425,10 @@ const Store = {
         Object.assign(d.profile, raw.profile);
         Object.assign(d.settings, raw.settings);
         d.records = Array.isArray(raw.records) ? raw.records : [];
+        if (raw.mm && typeof raw.mm === 'object') {
+          d.mm.weights = raw.mm.weights || {};
+          d.mm.rts = raw.mm.rts || {};
+        }
       }
     } catch (e) {}
     return d;
@@ -352,6 +438,11 @@ const Store = {
     catch (e) { return false; }
   },
   addRecord(d, r) { d.records.push(r); this.save(d); },
+  upsertRecord(d, r) {
+    const i = d.records.findIndex(x => x.id === r.id);
+    if (i >= 0) d.records[i] = r; else d.records.push(r);
+    this.save(d);
+  },
   exportJSON(d) { return JSON.stringify(d, null, 2); },
   merge(d, incoming) {
     if (!incoming || incoming.version !== 1 || !Array.isArray(incoming.records)) throw new Error('格式不对');
@@ -386,8 +477,12 @@ document.querySelectorAll('.themeBtn').forEach(b => b.addEventListener('click', 
 const desk = window.matchMedia('(min-width: 900px)');
 let current = 'sSetup';
 function show(id) {
+  if (id !== 'sMM' && typeof mm !== 'undefined' && mm.running) mmStop();
   current = id;
   const d = desk.matches;
+  document.body.classList.toggle('mm', id === 'sMM');
+  document.querySelectorAll('.modeTabs button').forEach(b =>
+    b.classList.toggle('sel', b.dataset.mode === (id === 'sMM' ? 'mm' : 'copy')));
   document.querySelectorAll('.screen').forEach(s => {
     const on = d ? (s.id === 'sSetup' || s.id === id || (id === 'sSetup' && s.id === 'sIdle'))
                  : (s.id === id);
@@ -396,6 +491,7 @@ function show(id) {
   renderSetup();
   if (id === 'sArchive') renderArchive();
   if (id === 'sPlay' && session) renderRecv();
+  if (id === 'sMM') renderMM();
   if (!d) window.scrollTo(0, 0);
 }
 desk.addEventListener('change', () => show(current));
@@ -419,7 +515,7 @@ const LIMITS = { cwpm: [10, 40], ewpm: [4, 40], tone: [400, 900] };
     o.value = n; o.textContent = n === 1 ? '第 1 课（K M）' : '第 ' + n + ' 课（新增 ' + KOCH[n] + '）';
     sel.appendChild(o);
   }
-  sel.addEventListener('change', () => { S.lesson = +sel.value; Store.save(data); renderSetup(); });
+  sel.addEventListener('change', () => { S.lesson = +sel.value; Store.save(data); renderSetup(); if (current === 'sMM' && S.mmSync) mmReset(); });
 })();
 
 $('durPick').addEventListener('click', e => {
@@ -431,7 +527,7 @@ document.querySelectorAll('[data-adj]').forEach(b => b.addEventListener('click',
   const k = b.dataset.adj, [lo, hi] = LIMITS[k];
   S[k] = Math.min(hi, Math.max(lo, S[k] + +b.dataset.d));
   if (S.ewpm > S.cwpm) S.ewpm = S.cwpm;           // 有效速度不能超过字符速度
-  Store.save(data); renderSetup();
+  Store.save(data); renderSetup(); if (current === 'sMM') renderMM();
 }));
 
 function renderSetup() {
@@ -440,7 +536,7 @@ function renderSetup() {
   $('lessonPick').value = S.lesson;
   document.querySelectorAll('[data-dur]').forEach(b => b.classList.toggle('sel', +b.dataset.dur === S.duration));
   $('v_cwpm').textContent = S.cwpm; $('v_ewpm').textContent = S.ewpm; $('v_tone').textContent = S.tone;
-  const mine = data.records.filter(r => r.lesson === S.lesson);
+  const mine = data.records.filter(r => r.lesson === S.lesson && r.type !== 'mm');
   const last = mine[mine.length - 1];
   $('recentList').innerHTML = mine.length ? mine.slice(-5).reverse().map(r =>
     '<div class="row" style="font-size:14px;margin-top:8px"><div style="color:var(--sub)">' + fmtDate(r.date) + '</div><div class="mono" style="font-weight:700;color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
@@ -540,8 +636,10 @@ function makeText(chars, seconds) {
   return groups;
 }
 
-function buildKeys(chars) {
-  const box = $('keys'); box.innerHTML = '';
+function buildKeys(chars) { buildKeysInto($('keys'), chars, (ch, b) => press(ch, b)); }
+
+function buildKeysInto(box, chars, handler) {
+  box.innerHTML = '';
   const n = chars.length;
   const cols = n <= 3 ? 3 : n <= 8 ? 4 : n <= 20 ? 5 : 6;
   const h = n <= 3 ? 120 : n <= 8 ? 84 : n <= 20 ? 64 : 54;
@@ -552,7 +650,8 @@ function buildKeys(chars) {
     const b = document.createElement('button');
     b.className = 'key mono'; b.textContent = ch;
     b.style.height = h + 'px'; b.style.fontSize = (n <= 3 ? 44 : n <= 8 ? 34 : 26) + 'px';
-    b.addEventListener('pointerdown', e => { e.preventDefault(); press(ch, b); });
+    b.dataset.ch = ch;
+    b.addEventListener('pointerdown', e => { e.preventDefault(); handler(ch, b); });
     box.appendChild(b);
   });
 }
@@ -699,9 +798,11 @@ function finish() {
 function renderArchive() {
   $('callsign').value = data.profile.callsign || '';
   const list = data.records.slice(-30).reverse();
-  $('recList').innerHTML = list.length ? list.map(r =>
-    '<div class="rec"><div><div>第 ' + r.lesson + ' 课 · ' + r.cwpm + '/' + r.ewpm + ' wpm</div><div class="hint">' + fmtDate(r.date) + '</div></div>' +
-    '<div class="acc mono" style="color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
+  $('recList').innerHTML = list.length ? list.map(r => r.type === 'mm'
+    ? '<div class="rec"><div><div>反应训练 · 第 ' + r.lesson + ' 课 · ' + r.count + ' 个</div><div class="hint">' + fmtDate(r.date) + ' · ' + r.cwpm + ' wpm</div></div>' +
+      '<div style="text-align:right"><div class="acc mono">' + r.avgRt.toFixed(2) + ' s</div><div class="hint">一次答对 ' + r.accuracy + '%</div></div></div>'
+    : '<div class="rec"><div><div>听抄 · 第 ' + r.lesson + ' 课 · ' + r.cwpm + '/' + r.ewpm + ' wpm</div><div class="hint">' + fmtDate(r.date) + '</div></div>' +
+      '<div class="acc mono" style="color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
   ).join('') : '<div class="empty">还没有练习记录</div>';
 }
 $('callsign').addEventListener('change', e => {
@@ -724,11 +825,239 @@ $('fileImport').addEventListener('change', async e => {
   e.target.value = '';
 });
 
+/* ---------- 反应训练（仿 LCWO MorseMachine） ---------- */
+const MM_PASS_W = 0.3, MM_PASS_RT = 1.0, MM_MIN_SAMPLES = 5;
+const mm = { running: false, paused: false, chars: [], cur: null, end: 0, firstTry: true, locked: false,
+  hist: [], timer: 0, sess: null, dismissed: '' };
+const MMD = data.mm;
+
+const mmLesson = () => S.mmSync ? S.lesson : S.mmLesson;
+const wOf = ch => (ch in MMD.weights ? MMD.weights[ch] : 1);
+const rtAvg = ch => { const a = MMD.rts[ch] || []; return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
+
+(function initMMPick() {
+  const sel = $('mmLessonPick');
+  for (let n = 1; n <= MAX_LESSON; n++) {
+    const o = document.createElement('option');
+    o.value = n; o.textContent = '第 ' + n + ' 课（K 至 ' + KOCH[n] + '，共 ' + (n + 1) + ' 个）';
+    sel.appendChild(o);
+  }
+  sel.addEventListener('change', () => { S.mmLesson = +sel.value; Store.save(data); mmReset(); });
+})();
+$('mmSyncBtn').addEventListener('click', () => { if (!S.mmSync) { S.mmSync = true; Store.save(data); mmReset(); } });
+$('mmManBtn').addEventListener('click', () => { if (S.mmSync) { S.mmSync = false; S.mmLesson = S.lesson; Store.save(data); mmReset(); } });
+
+document.querySelectorAll('.modeTabs button').forEach(b => b.addEventListener('click', () => {
+  if (b.dataset.mode === 'mm') { if (current !== 'sMM') { stopAudio(); cancelAnimationFrame(raf); session = null; show('sMM'); mmStart(); } }
+  else if (current === 'sMM') show('sSetup');
+}));
+
+function mmNewSession() {
+  mm.sess = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), date: new Date().toISOString(),
+    lesson: mmLesson(), count: 0, first: 0, rts: [] };
+}
+
+function mmReset() {
+  mmStop();
+  renderMM();
+  if (current === 'sMM') mmStart();
+}
+
+function mmStart() {
+  mm.chars = lessonChars(mmLesson());
+  mm.running = true; mm.paused = false; mm.locked = false; mm.cur = null; mm.hist = [];
+  mmNewSession();
+  buildKeysInto($('mmKeys'), mm.chars, (ch, b) => mmAnswer(ch, b));
+  $('mmUnlock').hidden = true;
+  renderMM();
+  mmNext();
+}
+
+function mmStop() {
+  clearTimeout(mm.timer);
+  if (mm.running) stopAudio();
+  mm.running = false; mm.paused = false;
+  mmSave();
+}
+
+function mmSave() {
+  const s = mm.sess;
+  if (!s || !s.count) return;
+  Store.upsertRecord(data, {
+    id: s.id, type: 'mm', callsign: (data.profile.callsign || '').toUpperCase(), date: s.date,
+    lesson: s.lesson, cwpm: S.cwpm, tone: S.tone, count: s.count, firstTry: s.first,
+    accuracy: Math.round(s.first / s.count * 100),
+    avgRt: s.rts.length ? s.rts.reduce((x, y) => x + y, 0) / s.rts.length : 0
+  });
+}
+
+function mmPick() {
+  // 错误条越高的字符出现越多；同一字符最多连续 3 次
+  const last = mm.hist.slice(-3);
+  let pool = mm.chars;
+  if (last.length === 3 && last.every(c => c === last[0]) && pool.length > 1) pool = pool.filter(c => c !== last[0]);
+  const ws = pool.map(c => wOf(c) + 0.08);
+  let r = Math.random() * ws.reduce((x, y) => x + y, 0);
+  for (let i = 0; i < pool.length; i++) { r -= ws[i]; if (r <= 0) return pool[i]; }
+  return pool[pool.length - 1];
+}
+
+function mmPlay() {
+  const tl = playText(mm.cur, 0.06);
+  mm.end = tl.end;
+}
+
+function mmNext() {
+  if (!mm.running) return;
+  mm.cur = mmPick(); mm.hist.push(mm.cur); mm.firstTry = true; mm.locked = false;
+  setCircle('listen');
+  $('mmMsg').className = ''; $('mmMsg').textContent = '听到就按，答对自动发下一个';
+  mmPlay();
+}
+
+function setCircle(state) {
+  const c = $('mmCircle');
+  c.className = 'mmCircle' + (state === 'wrong' ? ' wrong' : state === 'idle' ? ' idle' : '');
+  if (state === 'wrong') c.innerHTML = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>再听一次';
+  else if (state === 'idle') c.innerHTML = mm.paused ? '点击继续' : '点击开始';
+  else c.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg><small class="mono" id="mmLive"></small>';
+}
+
+$('mmCircle').addEventListener('click', () => {
+  if (!mm.running) { mmStart(); return; }
+  if (mm.paused) { mm.paused = false; if (mm.cur) { setCircle('listen'); mmPlay(); } else mmNext(); return; }
+  if (mm.cur && !mm.locked) mmPlay();            // 重听当前字符，不算跳过
+});
+
+function flashKey(b, cls) {
+  if (!b) return;
+  b.classList.add(cls); setTimeout(() => b.classList.remove(cls), cls === 'bad' ? 600 : 160);
+}
+
+function mmAnswer(ch, b) {
+  if (!mm.running || mm.paused || mm.locked || !mm.cur) return;
+  if (!b) b = document.querySelector('#mmKeys [data-ch="' + CSS.escape(ch) + '"]');
+  if (navigator.vibrate) navigator.vibrate(ch === mm.cur ? 8 : [20, 40, 20]);
+  if (ch === mm.cur) {
+    flashKey(b, 'good');
+    const s = mm.sess; s.count++;
+    if (mm.firstTry) {
+      const rt = Math.max(0, audio().currentTime - mm.end);
+      s.first++; s.rts.push(rt);
+      MMD.weights[ch] = wOf(ch) * 0.9;
+      (MMD.rts[ch] = MMD.rts[ch] || []).push(+rt.toFixed(3));
+      if (MMD.rts[ch].length > 10) MMD.rts[ch].shift();
+    }
+    mm.locked = true;
+    if (s.count % 20 === 0) mmSave(); else Store.save(data);
+    renderMM();
+    if (mmMastered()) { mmShowUnlock(); return; }
+    clearTimeout(mm.timer);
+    mm.timer = setTimeout(mmNext, 150);
+  } else {
+    flashKey(b, 'bad');
+    if (mm.firstTry) { MMD.weights[mm.cur] = Math.min(1, wOf(mm.cur) + 0.25); Store.save(data); }
+    mm.firstTry = false;
+    setCircle('wrong');
+    $('mmMsg').className = 'bad'; $('mmMsg').textContent = '按了 ' + ch + '，不对。按对才能继续';
+    renderMM();
+    clearTimeout(mm.timer);
+    mm.timer = setTimeout(() => { if (mm.running && !mm.paused) mmPlay(); }, 350);
+  }
+}
+
+function mmMastered() {
+  const key = mmLesson() + ':' + mm.chars.join('');
+  if (mm.dismissed === key) return false;
+  const rts = [];
+  for (const c of mm.chars) {
+    const a = rtAvg(c);
+    if (wOf(c) >= MM_PASS_W || !MMD.rts[c] || MMD.rts[c].length < MM_MIN_SAMPLES) return false;
+    rts.push(a);
+  }
+  return rts.reduce((x, y) => x + y, 0) / rts.length <= MM_PASS_RT;
+}
+
+function mmShowUnlock() {
+  const n = mmLesson();
+  const rts = mm.chars.map(rtAvg);
+  const avg = rts.reduce((x, y) => x + y, 0) / rts.length;
+  $('mmCircle').hidden = true; $('mmMsg').textContent = '';
+  $('mmUnlock').hidden = false;
+  $('mmUnlockTitle').textContent = '第 ' + n + ' 课已掌握';
+  $('mmUnlockSub').textContent = '错误条全部低于 30%，平均反应 ' + avg.toFixed(2) + ' 秒' + (S.mmSync ? '。同步模式下，听抄的课程也一起更新' : '');
+  if (n < MAX_LESSON) { $('mmNext').hidden = false; $('mmNext').textContent = '进入第 ' + (n + 1) + ' 课（新增 ' + KOCH[n + 1] + '）'; }
+  else { $('mmNext').hidden = true; $('mmUnlockTitle').textContent = '40 课全部掌握'; }
+  mmSave();
+}
+$('mmNext').addEventListener('click', () => {
+  if (S.mmSync) S.lesson = Math.min(MAX_LESSON, S.lesson + 1); else S.mmLesson = Math.min(MAX_LESSON, S.mmLesson + 1);
+  Store.save(data); $('mmCircle').hidden = false; renderSetup(); mmReset();
+});
+$('mmStay').addEventListener('click', () => {
+  mm.dismissed = mmLesson() + ':' + mm.chars.join('');
+  $('mmUnlock').hidden = true; $('mmCircle').hidden = false; mmNext();
+});
+
+$('mmEnd').addEventListener('click', () => {
+  const s = mm.sess;
+  mmStop();
+  if (s && s.count) {
+    const avg = s.rts.length ? s.rts.reduce((x, y) => x + y, 0) / s.rts.length : 0;
+    toast('本次 ' + s.count + ' 个 · 一次答对 ' + Math.round(s.first / s.count * 100) + '% · 平均 ' + avg.toFixed(2) + ' s');
+  }
+  $('mmUnlock').hidden = true; $('mmCircle').hidden = false;
+  setCircle('idle'); $('mmMsg').className = ''; $('mmMsg').textContent = '已保存到档案';
+});
+
+function renderMM() {
+  const n = mmLesson();
+  const chars = mm.running ? mm.chars : lessonChars(n);
+  $('mmSyncBtn').classList.toggle('sel', S.mmSync);
+  $('mmManBtn').classList.toggle('sel', !S.mmSync);
+  $('mmLessonPick').hidden = S.mmSync;
+  $('mmLessonPick').value = S.mmLesson;
+  $('mmLessonInfo').textContent = '第 ' + n + ' 课 · ' + (chars.length <= 8 ? chars.join(' ') : 'K 至 ' + KOCH[n] + ' 共 ' + chars.length + ' 个');
+  $('mmSpeedInfo').textContent = S.cwpm + ' wpm · ' + S.tone + ' Hz';
+  const s = mm.sess;
+  $('mmCount').textContent = s ? s.count : 0;
+  $('mmAcc').textContent = s && s.count ? Math.round(s.first / s.count * 100) + '%' : '–';
+  $('mmRt').textContent = s && s.rts.length ? (s.rts.reduce((x, y) => x + y, 0) / s.rts.length).toFixed(2) + 's' : '–';
+  $('mmBars').innerHTML = chars.map(c => {
+    const w = wOf(c), a = rtAvg(c);
+    const col = w < MM_PASS_W ? 'var(--ok)' : w < 0.5 ? 'var(--ac)' : 'var(--err)';
+    return '<div class="mb"><div class="ch mono">' + esc(c) + '</div><div class="w"><div class="tr"><i style="width:' + Math.round(w * 100) + '%;background:' + col + '"></i></div><small class="mono">' + (a == null ? '—' : a.toFixed(2) + ' s') + '</small></div></div>';
+  }).join('');
+  if (!mm.running) {
+    if (!$('mmKeys').children.length || $('mmKeys').children.length !== chars.length) buildKeysInto($('mmKeys'), chars, (ch, b) => mmAnswer(ch, b));
+    setCircle('idle');
+  }
+}
+
+/* ---------- 键盘输入（电脑） ---------- */
+document.addEventListener('keydown', e => {
+  if (e.metaKey || e.ctrlKey || e.altKey) return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
+  const k = e.key.length === 1 ? e.key.toUpperCase() : e.key;
+  if (current === 'sMM') {
+    if (mm.running && mm.chars.includes(k)) { e.preventDefault(); mmAnswer(k); }
+  } else if (current === 'sPlay' && session) {
+    if (session.chars.includes(k)) { e.preventDefault(); press(k, document.querySelector('#keys [data-ch="' + CSS.escape(k) + '"]')); }
+    else if (k === ' ') { e.preventDefault(); press('_', null); }
+    else if (k === 'Backspace') { e.preventDefault(); session.recv.pop(); renderRecv(); }
+  }
+});
+
 /* ---------- 启动 ---------- */
 document.addEventListener('dblclick', e => e.preventDefault(), { passive: false });
 document.addEventListener('visibilitychange', () => {
   // 切到后台时中止本组，避免计时和声音错位
   if (document.hidden && session) { stopAudio(); cancelAnimationFrame(raf); session = null; show('sSetup'); }
+  if (document.hidden && mm.running && !mm.paused) {
+    clearTimeout(mm.timer); stopAudio(); mm.paused = true; mmSave(); setCircle('idle');
+    $('mmMsg').className = ''; $('mmMsg').textContent = '已暂停';
+  }
 });
 applyTheme();
 show('sSetup');
