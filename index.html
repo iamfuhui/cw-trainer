@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="CW 听抄">
+<meta name="apple-mobile-web-app-title" content="CW">
 <meta name="theme-color" content="#2B2D31">
-<title>CW 听抄练习</title>
+<title>CW 练习</title>
 <style>
 :root{
   --bg:#2B2D31;--sf:#35373C;--key:#41444A;--keyOn:#4E5259;--bd:#4D5057;--tx:#ECEDEF;--sub:#A9ADB4;
@@ -21,6 +21,8 @@
 [hidden]{display:none !important}
 html,body{margin:0;background:var(--bg);color:var(--tx);
   font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans SC","Microsoft YaHei",system-ui,sans-serif}
+html[lang=ja],html[lang=ja] body{font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic UI","Meiryo","Noto Sans JP",system-ui,sans-serif}
+html[lang=en],html[lang=en] body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif}
 body{min-height:100dvh;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 button,select,input{font:inherit;color:inherit}
 button{cursor:pointer;touch-action:manipulation}
@@ -116,6 +118,7 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
 .modeTabs button{height:38px;border-radius:10px;border:0;background:transparent;color:var(--sub);font-size:15px}
 .modeTabs button.sel{background:var(--ac);color:var(--acTx);font-weight:700}
 body.mm .copyOnly{display:none !important}
+#sSetup > .modeTabs{flex-grow:0}
 
 /* 反应训练 */
 #sMM{gap:14px}
@@ -163,6 +166,7 @@ body.mm .copyOnly{display:none !important}
   .topbar{display:flex !important;justify-content:space-between;align-items:center;gap:12px;max-width:1200px;margin:0 auto 24px}
   .topbar .btn{width:auto;height:40px;padding:0 16px;border-radius:20px;background:var(--sf);font-size:14px}
   .topbar .round{width:40px;height:40px}
+  .topbar .langPick{height:40px;border-radius:20px;background:var(--sf)}
   .app{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:320px minmax(0,1fr);gap:24px;align-items:start}
   .screen{min-height:0;max-width:none;margin:0;padding:24px;border-radius:20px;background:var(--sf);
     border:1px solid var(--bd);grid-column:2;grid-row:1}
@@ -197,11 +201,12 @@ body.mm .copyOnly{display:none !important}
 <body>
 
 <header class="topbar d-only">
-  <div style="display:flex;align-items:center;gap:18px"><div class="title" style="margin:0">CW 练习</div>
-    <div class="modeTabs"><button data-mode="copy">听抄</button><button data-mode="mm">反应训练</button></div></div>
+  <div style="display:flex;align-items:center;gap:18px"><div class="title" style="margin:0" data-i18n="appName">CW 练习</div>
+    <div class="modeTabs"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button></div></div>
   <div style="display:flex;gap:8px">
-    <button class="btn" data-go="sArchive">我的档案</button>
-    <button class="round themeBtn" aria-label="切换日间/夜间"></button>
+    <select class="pick langPick" aria-label="Language"></select>
+    <button class="btn" data-go="sArchive" data-i18n="archive">我的档案</button>
+    <button class="round themeBtn" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
   </div>
 </header>
 
@@ -209,14 +214,14 @@ body.mm .copyOnly{display:none !important}
 
 <!-- ============ 1 设置 ============ -->
 <section class="screen on" id="sSetup">
-  <div class="modeTabs m-only"><button data-mode="copy">听抄</button><button data-mode="mm">反应训练</button></div>
+  <div class="modeTabs m-only"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button></div>
   <div class="head m-only">
-    <div><div class="eyebrow">Koch 听抄练习</div><div class="title">练习设置</div></div>
+    <div><div class="eyebrow" data-i18n="kochCopy">Koch 听抄练习</div><div class="title" data-i18n="setupTitle">练习设置</div></div>
     <div style="display:flex;gap:8px">
-      <button class="round" data-go="sArchive" aria-label="我的档案">
+      <button class="round" data-go="sArchive" data-i18n-aria="archive" aria-label="我的档案">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>
       </button>
-      <button class="round themeBtn" aria-label="切换日间/夜间"></button>
+      <button class="round themeBtn" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
     </div>
   </div>
 
@@ -225,11 +230,11 @@ body.mm .copyOnly{display:none !important}
       <div class="eyebrow" id="lessonName">当前课程 · 第 2 课</div>
       <div class="letters mono" id="lessonLetters">K M U</div>
     </div>
-    <select class="pick" id="lessonPick" aria-label="选择课程"></select>
+    <select class="pick" id="lessonPick" data-i18n-aria="chooseLesson" aria-label="选择课程"></select>
   </div>
 
   <div class="copyOnly">
-    <div class="label">每组时长</div>
+    <div class="label" data-i18n="duration">每组时长</div>
     <div class="grid3" id="durPick">
       <button class="chip" data-dur="30">30 秒</button>
       <button class="chip" data-dur="60">1 分钟</button>
@@ -239,64 +244,64 @@ body.mm .copyOnly{display:none !important}
 
   <div class="card">
     <div class="row">
-      <div><div>字符速度</div><div class="hint">每个字母本身的快慢</div></div>
-      <div class="step"><button data-adj="cwpm" data-d="-1" aria-label="减小字符速度">−</button>
+      <div><div data-i18n="cwpm">字符速度</div><div class="hint" data-i18n="cwpmHint">每个字母本身的快慢</div></div>
+      <div class="step"><button data-adj="cwpm" data-d="-1" data-i18n-aria="cwpmDec" aria-label="减小字符速度">−</button>
         <div class="v mono"><span id="v_cwpm">20</span><small>wpm</small></div>
-        <button data-adj="cwpm" data-d="1" aria-label="增大字符速度">+</button></div>
+        <button data-adj="cwpm" data-d="1" data-i18n-aria="cwpmInc" aria-label="增大字符速度">+</button></div>
     </div>
     <div class="row copyOnly">
-      <div><div>有效速度</div><div class="hint">字母之间留多久</div></div>
-      <div class="step"><button data-adj="ewpm" data-d="-1" aria-label="减小有效速度">−</button>
+      <div><div data-i18n="ewpm">有效速度</div><div class="hint" data-i18n="ewpmHint">字母之间留多久</div></div>
+      <div class="step"><button data-adj="ewpm" data-d="-1" data-i18n-aria="ewpmDec" aria-label="减小有效速度">−</button>
         <div class="v mono"><span id="v_ewpm">10</span><small>wpm</small></div>
-        <button data-adj="ewpm" data-d="1" aria-label="增大有效速度">+</button></div>
+        <button data-adj="ewpm" data-d="1" data-i18n-aria="ewpmInc" aria-label="增大有效速度">+</button></div>
     </div>
     <div class="row">
-      <div><div>音调</div><div class="hint">每次加减 50 Hz</div></div>
-      <div class="step"><button data-adj="tone" data-d="-50" aria-label="降低音调">−</button>
+      <div><div data-i18n="tone">音调</div><div class="hint" data-i18n="toneHint">每次加减 50 Hz</div></div>
+      <div class="step"><button data-adj="tone" data-d="-50" data-i18n-aria="toneDec" aria-label="降低音调">−</button>
         <div class="v mono"><span id="v_tone">600</span><small>Hz</small></div>
-        <button data-adj="tone" data-d="50" aria-label="升高音调">+</button></div>
+        <button data-adj="tone" data-d="50" data-i18n-aria="toneInc" aria-label="升高音调">+</button></div>
     </div>
-    <div style="margin-top:16px"><button class="btn small" id="btnPreview">试听当前设置</button></div>
+    <div style="margin-top:16px"><button class="btn small" id="btnPreview" data-i18n="preview">试听当前设置</button></div>
   </div>
 
-  <div class="card d-only copyOnly"><div class="label">本课最近成绩</div><div id="recentList"></div></div>
+  <div class="card d-only copyOnly"><div class="label" data-i18n="recentLesson">本课最近成绩</div><div id="recentList"></div></div>
 
   <div class="spacer m-only"></div>
   <div class="last m-only" id="lastScore"></div>
-  <button class="btn primary m-only" id="btnStart">开始听抄</button>
+  <button class="btn primary m-only" id="btnStart" data-i18n="start">开始听抄</button>
 </section>
 
 <!-- ============ 桌面：右侧待开始 ============ -->
 <section class="screen" id="sIdle">
-  <div><div class="eyebrow" id="idleInfo"></div><div class="title">准备开始</div></div>
+  <div><div class="eyebrow" id="idleInfo"></div><div class="title" data-i18n="ready">准备开始</div></div>
   <div class="card" style="text-align:center;padding:48px 16px">
     <div class="letters mono" id="idleLetters"></div>
-    <div class="hint" style="margin-top:14px">本组从以上字符中随机发送，5 个一组</div>
+    <div class="hint" style="margin-top:14px" data-i18n="readyHint">本组从以上字符中随机发送，5 个一组</div>
   </div>
-  <button class="btn primary" id="btnStart2" style="max-width:320px;align-self:center">开始听抄</button>
+  <button class="btn primary" id="btnStart2" style="max-width:320px;align-self:center" data-i18n="start">开始听抄</button>
 </section>
 
 <!-- ============ 2 听抄中 ============ -->
 <section class="screen" id="sPlay" style="gap:14px">
   <div class="head">
-    <button class="round" id="btnStop" aria-label="停止">
+    <button class="round" id="btnStop" data-i18n-aria="stop" aria-label="停止">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
     </button>
     <div><div class="timer mono" id="timer">1:00</div><div class="eyebrow" id="playInfo" style="text-align:center"></div></div>
-    <button class="round themeBtn m-only" aria-label="切换日间/夜间"></button>
+    <button class="round themeBtn m-only" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
     <div class="d-only" style="width:44px"></div>
   </div>
   <div class="bar"><i id="bar"></i></div>
   <div class="card" style="padding:14px 16px">
-    <div class="row" style="font-size:13px;color:var(--sub);margin-bottom:6px"><div>你的抄收</div><div>已抄 <span id="cnt">0</span> 个</div></div>
+    <div class="row" style="font-size:13px;color:var(--sub);margin-bottom:6px"><div data-i18n="yourCopy">你的抄收</div><div id="cntLabel"></div></div>
     <div class="recv mono" id="recv"></div>
   </div>
-  <div class="spacer center" id="playHint">听到就点，没听出就点"跳过"</div>
+  <div class="spacer center" id="playHint"></div>
   <div class="keys" id="keys"></div>
   <div class="grid2">
-    <button class="fn" id="btnSkip">跳过（没听出）</button>
-    <button class="fn" id="btnBack" aria-label="退格">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M12 9l6 6M18 9l-6 6"/></svg>退格
+    <button class="fn" id="btnSkip" data-i18n="skip">跳过（没听出）</button>
+    <button class="fn" id="btnBack" data-i18n-aria="back" aria-label="退格">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 5H9l-6 7 6 7h12z"/><path d="M12 9l6 6M18 9l-6 6"/></svg><span data-i18n="back">退格</span>
     </button>
   </div>
 </section>
@@ -304,26 +309,26 @@ body.mm .copyOnly{display:none !important}
 <!-- ============ 3 核对结果 ============ -->
 <section class="screen" id="sResult">
   <div class="head">
-    <div><div class="eyebrow" id="resInfo"></div><div class="title">核对结果</div></div>
-    <button class="round themeBtn m-only" aria-label="切换日间/夜间"></button>
+    <div><div class="eyebrow" id="resInfo"></div><div class="title" data-i18n="resultTitle">核对结果</div></div>
+    <button class="round themeBtn m-only" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
   </div>
   <div class="card score">
-    <div><div class="eyebrow">正确率</div><div style="font-size:14px;margin-top:6px;color:var(--ac)" id="resMsg"></div></div>
+    <div><div class="eyebrow" data-i18n="accuracy">正确率</div><div style="font-size:14px;margin-top:6px;color:var(--ac)" id="resMsg"></div></div>
     <div class="big mono" id="resAcc">0%</div>
   </div>
   <div class="resActions">
     <button class="btn primary" id="btnNext" style="display:none"></button>
-    <button class="btn primary" id="btnAgain">再练一组</button>
-    <button class="btn" data-go="sSetup">调整速度或音调</button>
+    <button class="btn primary" id="btnAgain" data-i18n="again">再练一组</button>
+    <button class="btn" data-go="sSetup" data-i18n="adjust">调整速度或音调</button>
   </div>
   <div class="d-only">
-    <div class="label"><span>逐字对照：上行发送，下行抄收</span><span style="margin-left:18px"><i class="legend"></i>错误或漏抄</span></div>
+    <div class="label"><span data-i18n="alignLabel">逐字对照：上行发送，下行抄收</span><span style="margin-left:18px"><i class="legend"></i><span data-i18n="wrongMissed">错误或漏抄</span></span></div>
     <div class="card mono" id="resAlign"></div>
   </div>
-  <div class="m-only"><div class="label">发送</div><div class="card text mono" id="resSent"></div></div>
+  <div class="m-only"><div class="label" data-i18n="sent">发送</div><div class="card text mono" id="resSent"></div></div>
   <div class="m-only">
-    <div class="label">你的抄收</div><div class="card text mono" id="resRecv"></div>
-    <div class="hint" style="margin-top:8px">带下划线的为错误或漏抄</div>
+    <div class="label" data-i18n="yourCopy">你的抄收</div><div class="card text mono" id="resRecv"></div>
+    <div class="hint" style="margin-top:8px" data-i18n="underlineHint">带下划线的为错误或漏抄</div>
   </div>
   <div class="resBottom">
     <div class="card" id="resStats"></div>
@@ -335,66 +340,70 @@ body.mm .copyOnly{display:none !important}
 <!-- ============ 反应训练 ============ -->
 <section class="screen" id="sMM">
   <div class="head m-only">
-    <div class="modeTabs"><button data-mode="copy">听抄</button><button data-mode="mm">反应训练</button></div>
-    <button class="round themeBtn" aria-label="切换日间/夜间"></button>
+    <div class="modeTabs"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button></div>
+    <button class="round themeBtn" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
   </div>
   <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
     <div class="grid2">
-      <button class="chip" id="mmSyncBtn">同步学习进度</button>
-      <button class="chip" id="mmManBtn">自选课程</button>
+      <button class="chip" id="mmSyncBtn" data-i18n="mmSync">同步学习进度</button>
+      <button class="chip" id="mmManBtn" data-i18n="mmManual">自选课程</button>
     </div>
-    <select class="pick" id="mmLessonPick" aria-label="选择反应训练的课程" style="width:100%"></select>
+    <select class="pick" id="mmLessonPick" data-i18n-aria="chooseLesson" aria-label="选择反应训练的课程" style="width:100%"></select>
     <div class="row" style="font-size:13px;color:var(--sub)"><div id="mmLessonInfo"></div><div id="mmSpeedInfo"></div></div>
   </div>
   <div class="grid3 mmStats">
-    <div><b class="mono" id="mmCount">0</b><span>已答</span></div>
-    <div><b class="mono" id="mmAcc">–</b><span>一次答对</span></div>
-    <div><b class="mono" id="mmRt" style="color:var(--ac)">–</b><span>平均反应</span></div>
+    <div><b class="mono" id="mmCount">0</b><span data-i18n="answered">已答</span></div>
+    <div><b class="mono" id="mmAcc">–</b><span data-i18n="firstTry">一次答对</span></div>
+    <div><b class="mono" id="mmRt" style="color:var(--ac)">–</b><span data-i18n="avgRt">平均反应</span></div>
   </div>
   <div class="spacer center mmStage">
-    <button class="mmCircle" id="mmCircle" aria-label="重听当前字符"></button>
+    <button class="mmCircle" id="mmCircle" data-i18n-aria="replay" aria-label="重听当前字符"></button>
     <div id="mmMsg"></div>
     <div class="mmUnlock" id="mmUnlock" hidden>
       <div style="font-size:16px;font-weight:700" id="mmUnlockTitle"></div>
       <div class="hint" id="mmUnlockSub"></div>
       <button class="btn primary" id="mmNext"></button>
-      <button class="btn" id="mmStay">继续练本课</button>
+      <button class="btn" id="mmStay" data-i18n="stay">继续练本课</button>
     </div>
   </div>
   <div class="card" style="padding:12px 14px">
-    <div class="row" style="font-size:12px;color:var(--sub)"><div>错误条（越低越熟）· 平均反应</div><div>门槛 30% · 1.0 s</div></div>
+    <div class="row" style="font-size:12px;color:var(--sub)"><div data-i18n="barsLabel">错误条（越低越熟）· 平均反应</div><div data-i18n="goalLabel">门槛 30% · 1.0 s</div></div>
     <div class="mmBars" id="mmBars"></div>
   </div>
   <div class="keys" id="mmKeys"></div>
   <div class="row">
-    <div class="hint" style="margin:0">答错重听，按对才继续 · 每 20 个自动保存</div>
-    <button class="btn" id="mmEnd" style="width:auto;height:40px;padding:0 18px;font-size:14px;flex:none">结束本次</button>
+    <div class="hint" style="margin:0" data-i18n="mmFoot">答错重听，按对才继续 · 每 20 个自动保存</div>
+    <button class="btn" id="mmEnd" style="width:auto;height:40px;padding:0 18px;font-size:14px;flex:none" data-i18n="endSession">结束本次</button>
   </div>
 </section>
 
 <!-- ============ 4 我的档案 ============ -->
 <section class="screen" id="sArchive">
   <div class="head">
-    <button class="round" data-go="sSetup" aria-label="返回">
+    <button class="round" data-go="sSetup" data-i18n-aria="goBack" aria-label="返回">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
     </button>
-    <div class="title" style="margin:0">我的档案</div>
-    <button class="round themeBtn m-only" aria-label="切换日间/夜间"></button>
+    <div class="title" style="margin:0" data-i18n="archive">我的档案</div>
+    <button class="round themeBtn m-only" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
     <div class="d-only" style="width:44px"></div>
   </div>
   <div class="card row">
-    <label for="callsign">呼号</label>
+    <label for="callsign" data-i18n="callsign">呼号</label>
     <input class="cs mono" id="callsign" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="BA8XXX">
   </div>
+  <div class="card row">
+    <div>语言 · Language · 言語</div>
+    <select class="pick langPick" aria-label="Language"></select>
+  </div>
   <div class="card">
-    <div class="label">最近记录</div>
+    <div class="label" data-i18n="recentRecs">最近记录</div>
     <div id="recList"></div>
   </div>
   <div class="spacer"></div>
-  <div class="hint" style="text-align:center">记录保存在本机浏览器。换手机或清理浏览器前，请先导出备份。</div>
+  <div class="hint" style="text-align:center" data-i18n="storeHint">记录保存在本机浏览器。换手机或清理浏览器前，请先导出备份。</div>
   <div class="grid2">
-    <button class="btn" id="btnExport">导出档案</button>
-    <button class="btn" id="btnImport">导入档案</button>
+    <button class="btn" id="btnExport" data-i18n="export">导出档案</button>
+    <button class="btn" id="btnImport" data-i18n="import">导入档案</button>
   </div>
   <input type="file" id="fileImport" accept="application/json,.json" hidden>
 </section>
@@ -405,6 +414,123 @@ body.mm .copyOnly{display:none !important}
 
 <script>
 'use strict';
+
+/* ---------- 界面语言 ---------- */
+const I18N = {
+  zh: {
+    appName: 'CW 练习', tabCopy: '听抄', tabMM: '反应训练', archive: '我的档案', theme: '切换日间/夜间',
+    kochCopy: 'Koch 听抄练习', setupTitle: '练习设置', chooseLesson: '选择课程', curLesson: '当前课程 · {lesson}',
+    lesson: '第 {n} 课', optFirst: '第 1 课（K M）', optNew: '第 {n} 课（新增 {c}）', optRange: '第 {n} 课（K 至 {c}，共 {k} 个）',
+    duration: '每组时长', sec: '{n} 秒', min: '{n} 分钟',
+    cwpm: '字符速度', cwpmHint: '每个字母本身的快慢', ewpm: '有效速度', ewpmHint: '字母之间留多久', tone: '音调', toneHint: '每次加减 50 Hz',
+    cwpmDec: '减小字符速度', cwpmInc: '增大字符速度', ewpmDec: '减小有效速度', ewpmInc: '增大有效速度', toneDec: '降低音调', toneInc: '升高音调',
+    preview: '试听当前设置', recentLesson: '本课最近成绩', noRecords: '还没有记录', start: '开始听抄', ready: '准备开始',
+    readyHint: '本组从以上字符中随机发送，5 个一组', lastScore: '本课上次 {a}% · 最好 {b}% · 共练 {c} 组',
+    stop: '停止', yourCopy: '你的抄收', copied: '已抄 {n} 个', playHint: '听到就点，没听出就点"跳过"', getReady: '准备……',
+    skip: '跳过（没听出）', back: '退格', doneCheck: '发送完毕，核对结果',
+    resultTitle: '核对结果', accuracy: '正确率', again: '再练一组', adjust: '调整速度或音调',
+    alignLabel: '逐字对照：上行发送，下行抄收', wrongMissed: '错误或漏抄', sent: '发送', underlineHint: '带下划线的为错误或漏抄',
+    passed: '已达到 {p}% 目标', notPassed: '未达 {p}%，建议再练一组', nextLesson: '进入第 {n} 课（新增 {c}）',
+    perChar: '各字母正确率', confuse: '易混：{a} 听成 {b}', times: '{n} 次',
+    mmSync: '同步学习进度', mmManual: '自选课程', answered: '已答', firstTry: '一次答对', avgRt: '平均反应', replay: '重听当前字符',
+    stay: '继续练本课', barsLabel: '错误条（越低越熟）· 平均反应', goalLabel: '门槛 30% · 1.0 s',
+    mmFoot: '答错重听，按对才继续 · 每 20 个自动保存', endSession: '结束本次',
+    mmListen: '听到就按，答对自动发下一个', tapResume: '点击继续', tapStart: '点击开始', listenAgain: '再听一次', correct: '正确',
+    wrongKey: '按了 {c}，不对。按对才能继续', mastered: '第 {n} 课已掌握', masteredSub: '错误条全部低于 30%，平均反应 {r} 秒',
+    syncNote: '。同步模式下，听抄的课程也一起更新', allMastered: '40 课全部掌握',
+    sessionToast: '本次 {n} 个 · 一次答对 {a}% · 平均 {r} s', savedArchive: '已保存到档案', paused: '已暂停',
+    rangeInfo: 'K 至 {c} 共 {k} 个',
+    goBack: '返回', callsign: '呼号', recentRecs: '最近记录', noPractice: '还没有练习记录',
+    storeHint: '记录保存在本机浏览器。换手机或清理浏览器前，请先导出备份。', export: '导出档案', import: '导入档案',
+    recMM: '反应训练 · {lesson} · {n} 个', recCopy: '听抄 · {lesson} · {w} wpm', recFirst: '一次答对 {a}%',
+    csSaved: '呼号已保存', imported: '已导入 {n} 条记录', importFail: '导入失败：文件格式不对'
+  },
+  en: {
+    appName: 'CW Trainer', tabCopy: 'Copy', tabMM: 'Reaction', archive: 'My records', theme: 'Toggle light/dark',
+    kochCopy: 'Koch copy practice', setupTitle: 'Settings', chooseLesson: 'Choose lesson', curLesson: 'Current · {lesson}',
+    lesson: 'Lesson {n}', optFirst: 'Lesson 1 (K M)', optNew: 'Lesson {n} (+{c})', optRange: 'Lesson {n} (K–{c}, {k} chars)',
+    duration: 'Session length', sec: '{n} s', min: '{n} min',
+    cwpm: 'Character speed', cwpmHint: 'How fast each character is sent', ewpm: 'Effective speed', ewpmHint: 'Spacing between characters',
+    tone: 'Tone', toneHint: 'Steps of 50 Hz',
+    cwpmDec: 'Decrease character speed', cwpmInc: 'Increase character speed', ewpmDec: 'Decrease effective speed', ewpmInc: 'Increase effective speed',
+    toneDec: 'Lower tone', toneInc: 'Raise tone',
+    preview: 'Preview settings', recentLesson: 'Recent scores (this lesson)', noRecords: 'No records yet', start: 'Start', ready: 'Ready',
+    readyHint: 'Random 5-character groups from the characters above', lastScore: 'Last {a}% · best {b}% · {c} sessions',
+    stop: 'Stop', yourCopy: 'Your copy', copied: '{n} copied', playHint: 'Tap what you hear, or Skip if unsure', getReady: 'Get ready…',
+    skip: 'Skip', back: 'Backspace', doneCheck: 'Done — check results',
+    resultTitle: 'Results', accuracy: 'Accuracy', again: 'Go again', adjust: 'Adjust speed or tone',
+    alignLabel: 'Character by character: sent on top, your copy below', wrongMissed: 'Wrong or missed', sent: 'Sent',
+    underlineHint: 'Underlined = wrong or missed',
+    passed: '{p}% goal reached', notPassed: 'Below {p}% — try another round', nextLesson: 'Go to lesson {n} (+{c})',
+    perChar: 'Accuracy by character', confuse: '{a} heard as {b}', times: '{n}×',
+    mmSync: 'Sync with course', mmManual: 'Choose lesson', answered: 'Answered', firstTry: 'First try', avgRt: 'Avg reaction',
+    replay: 'Replay this character',
+    stay: 'Keep practicing', barsLabel: 'Error bars (lower is better) · avg reaction', goalLabel: 'Goal 30% · 1.0 s',
+    mmFoot: 'Wrong answers replay, no skipping · autosaves every 20', endSession: 'End session',
+    mmListen: 'Press what you hear — the next one plays when correct', tapResume: 'Tap to resume', tapStart: 'Tap to start',
+    listenAgain: 'Listen again', correct: 'Correct',
+    wrongKey: '{c} is wrong — answer correctly to continue', mastered: 'Lesson {n} mastered',
+    masteredSub: 'All error bars under 30%, avg reaction {r} s', syncNote: '. In sync mode, copy practice moves up too',
+    allMastered: 'All 40 lessons mastered',
+    sessionToast: '{n} answered · first try {a}% · avg {r} s', savedArchive: 'Saved to records', paused: 'Paused',
+    rangeInfo: 'K–{c} ({k} chars)',
+    goBack: 'Back', callsign: 'Callsign', recentRecs: 'Recent sessions', noPractice: 'No practice records yet',
+    storeHint: 'Records are stored in this browser only. Export a backup before switching phones or clearing browser data.',
+    export: 'Export', import: 'Import',
+    recMM: 'Reaction · {lesson} · {n} answered', recCopy: 'Copy · {lesson} · {w} wpm', recFirst: 'First try {a}%',
+    csSaved: 'Callsign saved', imported: 'Imported {n} records', importFail: 'Import failed: invalid file'
+  },
+  ja: {
+    appName: 'CW練習', tabCopy: '受信練習', tabMM: '反応トレーニング', archive: 'マイ記録', theme: 'ライト/ダーク切替',
+    kochCopy: 'Koch法 受信練習', setupTitle: '練習設定', chooseLesson: 'レッスンを選択', curLesson: '現在 · {lesson}',
+    lesson: 'レッスン{n}', optFirst: 'レッスン1（K M）', optNew: 'レッスン{n}（+{c}）', optRange: 'レッスン{n}（K〜{c}・{k}文字）',
+    duration: '1セットの長さ', sec: '{n}秒', min: '{n}分',
+    cwpm: '文字速度', cwpmHint: '1文字ごとの送信速度', ewpm: '実効速度', ewpmHint: '文字と文字の間隔', tone: 'トーン', toneHint: '50 Hzずつ調整',
+    cwpmDec: '文字速度を下げる', cwpmInc: '文字速度を上げる', ewpmDec: '実効速度を下げる', ewpmInc: '実効速度を上げる',
+    toneDec: 'トーンを下げる', toneInc: 'トーンを上げる',
+    preview: '現在の設定で試聴', recentLesson: 'このレッスンの最近の成績', noRecords: 'まだ記録がありません', start: '受信開始', ready: '準備完了',
+    readyHint: '上の文字からランダムに5文字ずつ送信します', lastScore: '前回 {a}% · 最高 {b}% · {c}セット',
+    stop: '停止', yourCopy: '受信内容', copied: '{n}文字', playHint: '聞こえたらタップ。わからなければ「スキップ」', getReady: '準備中…',
+    skip: 'スキップ', back: '1文字削除', doneCheck: '送信終了 — 結果を見る',
+    resultTitle: '結果', accuracy: '正答率', again: 'もう1セット', adjust: '速度・トーンを調整',
+    alignLabel: '1文字ずつ照合：上が送信、下が受信', wrongMissed: '誤り・抜け', sent: '送信', underlineHint: '下線は誤り・抜け',
+    passed: '目標 {p}% 達成', notPassed: '{p}% 未達成。もう1セットどうぞ', nextLesson: 'レッスン{n}へ（+{c}）',
+    perChar: '文字別の正答率', confuse: '{a} を {b} と聞き違え', times: '{n}回',
+    mmSync: '受信練習と同期', mmManual: 'レッスンを選ぶ', answered: '回答数', firstTry: '一発正解', avgRt: '平均反応',
+    replay: 'もう一度聞く',
+    stay: 'このレッスンを続ける', barsLabel: '苦手度（低いほど習熟）· 平均反応', goalLabel: '基準 30% · 1.0 s',
+    mmFoot: '間違えると再送、正解で次へ · 20問ごとに自動保存', endSession: '終了',
+    mmListen: '聞こえた文字を押す。正解すると次が流れます', tapResume: 'タップで再開', tapStart: 'タップで開始',
+    listenAgain: 'もう一度', correct: '正解',
+    wrongKey: '{c} は不正解。正解するまで先へ進みません', mastered: 'レッスン{n} 習得',
+    masteredSub: '全文字の苦手度が30%未満、平均反応 {r} 秒', syncNote: '。同期モードでは受信練習のレッスンも進みます',
+    allMastered: '全40レッスン習得',
+    sessionToast: '{n}問 · 一発正解 {a}% · 平均 {r} s', savedArchive: '記録に保存しました', paused: '一時停止中',
+    rangeInfo: 'K〜{c}（{k}文字）',
+    goBack: '戻る', callsign: 'コールサイン', recentRecs: '最近の記録', noPractice: 'まだ練習記録がありません',
+    storeHint: '記録はこのブラウザ内にのみ保存されます。機種変更やブラウザのデータ削除の前にエクスポートしてください。',
+    export: 'エクスポート', import: 'インポート',
+    recMM: '反応 · {lesson} · {n}問', recCopy: '受信 · {lesson} · {w} wpm', recFirst: '一発正解 {a}%',
+    csSaved: 'コールサインを保存しました', imported: '{n}件の記録をインポートしました', importFail: 'インポート失敗：ファイル形式が正しくありません'
+  }
+};
+const LANGS = [['zh', '中文'], ['en', 'English'], ['ja', '日本語']];
+let LANG = 'zh';
+function detectLang() {
+  for (const l of (navigator.languages || [navigator.language || ''])) {
+    const x = (l || '').toLowerCase();
+    if (x.startsWith('zh')) return 'zh';
+    if (x.startsWith('ja')) return 'ja';
+    if (x.startsWith('en')) return 'en';
+  }
+  return 'en';
+}
+function t(k, p) {
+  const str = (I18N[LANG] && I18N[LANG][k]) || I18N.zh[k] || k;
+  return p ? str.replace(/\{(\w+)\}/g, (_, x) => (x in p ? p[x] : '')) : str;
+}
+const LN = n => t('lesson', { n });
+const durLabel = sec => sec < 60 ? t('sec', { n: sec }) : t('min', { n: sec / 60 });
 
 /* ---------- 基础数据 ---------- */
 // LCWO 的 Koch 字母顺序；第 n 课 = 前 n+1 个字符
@@ -425,7 +551,7 @@ const Store = {
   defaults() {
     return {
       version: 1,
-      profile: { callsign: 'BA8BLK' },
+      profile: { callsign: '' },
       settings: { lesson: 1, duration: 60, cwpm: 20, ewpm: 10, tone: 600, theme: 'dark', mmSync: true, mmLesson: 1 },
       mm: { weights: {}, rts: {} },        // 反应训练：每个字符的错误条和最近反应时间
       records: []
@@ -522,13 +648,18 @@ const group5 = arr => { const out = []; for (let i = 0; i < arr.length; i += 5) 
 /* ---------- 1 设置 ---------- */
 const LIMITS = { cwpm: [10, 40], ewpm: [4, 40], tone: [400, 900] };
 
-(function initLessonPick() {
-  const sel = $('lessonPick');
+function fillLessonPick() {
+  const sel = $('lessonPick'); sel.innerHTML = '';
   for (let n = 1; n <= MAX_LESSON; n++) {
     const o = document.createElement('option');
-    o.value = n; o.textContent = n === 1 ? '第 1 课（K M）' : '第 ' + n + ' 课（新增 ' + KOCH[n] + '）';
+    o.value = n; o.textContent = n === 1 ? t('optFirst') : t('optNew', { n, c: KOCH[n] });
     sel.appendChild(o);
   }
+  sel.value = S.lesson;
+}
+(function initLessonPick() {
+  const sel = $('lessonPick');
+  fillLessonPick();
   sel.addEventListener('change', () => { S.lesson = +sel.value; Store.save(data); renderSetup(); if (current === 'sMM' && S.mmSync) mmReset(); });
 })();
 
@@ -545,7 +676,7 @@ document.querySelectorAll('[data-adj]').forEach(b => b.addEventListener('click',
 }));
 
 function renderSetup() {
-  $('lessonName').textContent = '当前课程 · 第 ' + S.lesson + ' 课';
+  $('lessonName').textContent = t('curLesson', { lesson: LN(S.lesson) });
   $('lessonLetters').textContent = lessonChars(S.lesson).join(' ');
   $('lessonPick').value = S.lesson;
   document.querySelectorAll('[data-dur]').forEach(b => b.classList.toggle('sel', +b.dataset.dur === S.duration));
@@ -554,10 +685,10 @@ function renderSetup() {
   const last = mine[mine.length - 1];
   $('recentList').innerHTML = mine.length ? mine.slice(-5).reverse().map(r =>
     '<div class="row" style="font-size:14px;margin-top:8px"><div style="color:var(--sub)">' + fmtDate(r.date) + '</div><div class="mono" style="font-weight:700;color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
-  ).join('') : '<div class="hint">还没有记录</div>';
-  $('idleInfo').textContent = '第 ' + S.lesson + ' 课 · ' + (S.duration < 60 ? S.duration + ' 秒' : S.duration / 60 + ' 分钟') + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + S.tone + ' Hz';
+  ).join('') : '<div class="hint">' + t('noRecords') + '</div>';
+  $('idleInfo').textContent = LN(S.lesson) + ' · ' + durLabel(S.duration) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + S.tone + ' Hz';
   $('idleLetters').textContent = lessonChars(S.lesson).join(' ');
-  $('lastScore').textContent = last ? '本课上次 ' + last.accuracy + '% · 最好 ' + Math.max(...mine.map(r => r.accuracy)) + '% · 共练 ' + mine.length + ' 组' : '';
+  $('lastScore').textContent = last ? t('lastScore', { a: last.accuracy, b: Math.max(...mine.map(r => r.accuracy)), c: mine.length }) : '';
 }
 
 /* ---------- 发声 ---------- */
@@ -689,7 +820,7 @@ function press(ch, el) {
 
 function renderRecv(fresh) {
   const r = session.recv;
-  $('cnt').textContent = r.length;
+  $('cntLabel').textContent = t('copied', { n: r.length });
   const s = group5(r);
   // 刚输入的字符单独包一层，播放落字效果
   const fmt = (text, isLast) => fresh && isLast && text.length
@@ -715,8 +846,8 @@ function startSession() {
   const tl = playText(text, 1.0);                 // 1 秒准备时间
   session = { chars, groups, recv: [], start: tl.start, end: tl.end, done: false };
   buildKeys(chars);
-  $('playInfo').textContent = '第 ' + S.lesson + ' 课 · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + S.tone + ' Hz';
-  $('playHint').textContent = '准备……';
+  $('playInfo').textContent = LN(S.lesson) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + S.tone + ' Hz';
+  $('playHint').textContent = t('getReady');
   renderRecv();
   show('sPlay');
   tick();
@@ -729,7 +860,7 @@ function tick() {
   if (now < session.start) {
     $('timer').textContent = fmtTime(total); $('bar').style.width = '0%';
   } else if (now < session.end) {
-    $('playHint').textContent = '听到就点，没听出就点"跳过"';
+    $('playHint').textContent = t('playHint');
     $('timer').textContent = fmtTime(Math.ceil(session.end - now));
     $('bar').style.width = ((now - session.start) / total * 100) + '%';
   } else if (!session.done) {
@@ -737,7 +868,7 @@ function tick() {
     $('timer').textContent = '0:00'; $('bar').style.width = '100%';
     $('playHint').innerHTML = '';
     const b = document.createElement('button');
-    b.className = 'btn primary'; b.textContent = '发送完毕，核对结果';
+    b.className = 'btn primary'; b.textContent = t('doneCheck');
     b.addEventListener('click', finish);
     $('playHint').appendChild(b);
     return;
@@ -766,7 +897,7 @@ function finish() {
     if (r === s) { correct++; per[s][0]++; recvHtml.push(esc(s)); }
     else {
       recvHtml.push('<span class="err">' + esc(r || '_') + '</span>');
-      if (r && r !== '_') conf[s + ' 听成 ' + r] = (conf[s + ' 听成 ' + r] || 0) + 1;
+      if (r && r !== '_') conf[s + '>' + r] = (conf[s + '>' + r] || 0) + 1;
     }
     if (i % 5 === 4 && i < sent.length - 1) recvHtml.push(' ');
   });
@@ -792,30 +923,30 @@ function finish() {
   }
   $('resAlign').innerHTML = alignHtml.join('');
 
-  $('resInfo').textContent = '第 ' + S.lesson + ' 课 · ' + (S.duration < 60 ? S.duration + ' 秒' : S.duration / 60 + ' 分钟') + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm';
+  $('resInfo').textContent = LN(S.lesson) + ' · ' + durLabel(S.duration) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm';
   $('resAcc').textContent = acc + '%';
   $('resSent').textContent = group5(sent);
   $('resRecv').innerHTML = recvHtml.join('');
 
   const passed = acc >= PASS;
-  $('resMsg').textContent = passed ? '已达到 ' + PASS + '% 目标' : '未达 ' + PASS + '%，建议再练一组';
+  $('resMsg').textContent = passed ? t('passed', { p: PASS }) : t('notPassed', { p: PASS });
   const next = $('btnNext');
   if (passed && S.lesson < MAX_LESSON) {
-    next.style.display = ''; next.textContent = '进入第 ' + (S.lesson + 1) + ' 课（新增 ' + KOCH[S.lesson + 1] + '）';
+    next.style.display = ''; next.textContent = t('nextLesson', { n: S.lesson + 1, c: KOCH[S.lesson + 1] });
     next.onclick = () => { S.lesson++; Store.save(data); show('sSetup'); };
     $('btnAgain').className = 'btn';
   } else {
     next.style.display = 'none'; $('btnAgain').className = 'btn primary';
   }
 
-  $('resStats').innerHTML = '<div class="label" style="margin:0">各字母正确率</div>' +
+  $('resStats').innerHTML = '<div class="label" style="margin:0">' + t('perChar') + '</div>' +
     session.chars.filter(c => per[c]).map(c => {
       const p = Math.round(per[c][0] / per[c][1] * 100);
       return '<div class="stat"><div class="ch mono">' + esc(c) + '</div><div class="track"><i style="width:' + p + '%"></i></div><div class="pct mono">' + p + '%</div></div>';
     }).join('');
   const cl = Object.entries(conf).sort((a, b) => b[1] - a[1]);
   $('resConf').style.display = cl.length ? '' : 'none';
-  $('resConf').innerHTML = cl.slice(0, 3).map(([k, v]) => '<div class="row" style="margin:4px 0"><div>易混：' + esc(k) + '</div><div class="mono" style="color:var(--ac)">' + v + ' 次</div></div>').join('');
+  $('resConf').innerHTML = cl.slice(0, 3).map(([k, v]) => { const [a, b] = k.split('>'); return '<div class="row" style="margin:4px 0"><div>' + esc(t('confuse', { a, b })) + '</div><div class="mono" style="color:var(--ac)">' + t('times', { n: v }) + '</div></div>'; }).join('');
 
   session = null;
   show('sResult');
@@ -826,14 +957,14 @@ function renderArchive() {
   $('callsign').value = data.profile.callsign || '';
   const list = data.records.slice(-30).reverse();
   $('recList').innerHTML = list.length ? list.map(r => r.type === 'mm'
-    ? '<div class="rec"><div><div>反应训练 · 第 ' + r.lesson + ' 课 · ' + r.count + ' 个</div><div class="hint">' + fmtDate(r.date) + ' · ' + r.cwpm + ' wpm</div></div>' +
-      '<div style="text-align:right"><div class="acc mono">' + r.avgRt.toFixed(2) + ' s</div><div class="hint">一次答对 ' + r.accuracy + '%</div></div></div>'
-    : '<div class="rec"><div><div>听抄 · 第 ' + r.lesson + ' 课 · ' + r.cwpm + '/' + r.ewpm + ' wpm</div><div class="hint">' + fmtDate(r.date) + '</div></div>' +
+    ? '<div class="rec"><div><div>' + t('recMM', { lesson: LN(r.lesson), n: r.count }) + '</div><div class="hint">' + fmtDate(r.date) + ' · ' + r.cwpm + ' wpm</div></div>' +
+      '<div style="text-align:right"><div class="acc mono">' + r.avgRt.toFixed(2) + ' s</div><div class="hint">' + t('recFirst', { a: r.accuracy }) + '</div></div></div>'
+    : '<div class="rec"><div><div>' + t('recCopy', { lesson: LN(r.lesson), w: r.cwpm + '/' + r.ewpm }) + '</div><div class="hint">' + fmtDate(r.date) + '</div></div>' +
       '<div class="acc mono" style="color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
-  ).join('') : '<div class="empty">还没有练习记录</div>';
+  ).join('') : '<div class="empty">' + t('noPractice') + '</div>';
 }
 $('callsign').addEventListener('change', e => {
-  data.profile.callsign = e.target.value.trim().toUpperCase(); Store.save(data); toast('呼号已保存');
+  data.profile.callsign = e.target.value.trim().toUpperCase(); Store.save(data); toast(t('csSaved'));
 });
 $('btnExport').addEventListener('click', () => {
   const blob = new Blob([Store.exportJSON(data)], { type: 'application/json' });
@@ -847,8 +978,8 @@ $('btnExport').addEventListener('click', () => {
 $('btnImport').addEventListener('click', () => $('fileImport').click());
 $('fileImport').addEventListener('change', async e => {
   const f = e.target.files[0]; if (!f) return;
-  try { const n = Store.merge(data, JSON.parse(await f.text())); toast('已导入 ' + n + ' 条记录'); renderArchive(); }
-  catch (err) { toast('导入失败：文件格式不对'); }
+  try { const n = Store.merge(data, JSON.parse(await f.text())); toast(t('imported', { n })); renderArchive(); }
+  catch (err) { toast(t('importFail')); }
   e.target.value = '';
 });
 
@@ -862,13 +993,18 @@ const mmLesson = () => S.mmSync ? S.lesson : S.mmLesson;
 const wOf = ch => (ch in MMD.weights ? MMD.weights[ch] : 1);
 const rtAvg = ch => { const a = MMD.rts[ch] || []; return a.length ? a.reduce((x, y) => x + y, 0) / a.length : null; };
 
-(function initMMPick() {
-  const sel = $('mmLessonPick');
+function fillMMPick() {
+  const sel = $('mmLessonPick'); sel.innerHTML = '';
   for (let n = 1; n <= MAX_LESSON; n++) {
     const o = document.createElement('option');
-    o.value = n; o.textContent = '第 ' + n + ' 课（K 至 ' + KOCH[n] + '，共 ' + (n + 1) + ' 个）';
+    o.value = n; o.textContent = t('optRange', { n, c: KOCH[n], k: n + 1 });
     sel.appendChild(o);
   }
+  sel.value = S.mmLesson;
+}
+(function initMMPick() {
+  const sel = $('mmLessonPick');
+  fillMMPick();
   sel.addEventListener('change', () => { S.mmLesson = +sel.value; Store.save(data); mmReset(); });
 })();
 $('mmSyncBtn').addEventListener('click', () => { if (!S.mmSync) { S.mmSync = true; Store.save(data); mmReset(); } });
@@ -938,7 +1074,7 @@ function mmNext() {
   if (!mm.running) return;
   mm.cur = mmPick(); mm.hist.push(mm.cur); mm.firstTry = true; mm.locked = false;
   setCircle('listen');
-  $('mmMsg').className = ''; $('mmMsg').textContent = '听到就按，答对自动发下一个';
+  $('mmMsg').className = ''; $('mmMsg').textContent = t('mmListen');
   mmPlay();
 }
 
@@ -951,8 +1087,8 @@ function setCircle(state, ch) {
     return;
   }
   c.className = 'mmCircle' + (state === 'wrong' ? ' wrong' : state === 'idle' ? ' idle' : '');
-  if (state === 'wrong') c.innerHTML = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>再听一次';
-  else if (state === 'idle') c.innerHTML = mm.paused ? '点击继续' : '点击开始';
+  if (state === 'wrong') c.innerHTML = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>' + t('listenAgain');
+  else if (state === 'idle') c.innerHTML = mm.paused ? t('tapResume') : t('tapStart');
   else c.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg><small class="mono" id="mmLive"></small>';
 }
 
@@ -987,14 +1123,14 @@ function mmAnswer(ch, b) {
     clearTimeout(mm.timer);
     if (mmMastered()) { mmShowUnlock(); return; }
     setCircle('good', ch);
-    $('mmMsg').className = ''; $('mmMsg').textContent = '正确';
+    $('mmMsg').className = ''; $('mmMsg').textContent = t('correct');
     mm.timer = setTimeout(mmNext, 200);
   } else {
     flashKey(b, 'bad');
     if (mm.firstTry) { MMD.weights[mm.cur] = Math.min(1, wOf(mm.cur) + 0.25); Store.save(data); }
     mm.firstTry = false;
     setCircle('bad', ch);
-    $('mmMsg').className = 'bad'; $('mmMsg').textContent = '按了 ' + ch + '，不对。按对才能继续';
+    $('mmMsg').className = 'bad'; $('mmMsg').textContent = t('wrongKey', { c: ch });
     renderMM();
     clearTimeout(mm.timer);
     mm.timer = setTimeout(() => { if (mm.running && !mm.paused) { setCircle('wrong'); mmPlay(); } }, 320);
@@ -1019,10 +1155,10 @@ function mmShowUnlock() {
   const avg = rts.reduce((x, y) => x + y, 0) / rts.length;
   $('mmCircle').hidden = true; $('mmMsg').textContent = '';
   $('mmUnlock').hidden = false;
-  $('mmUnlockTitle').textContent = '第 ' + n + ' 课已掌握';
-  $('mmUnlockSub').textContent = '错误条全部低于 30%，平均反应 ' + avg.toFixed(2) + ' 秒' + (S.mmSync ? '。同步模式下，听抄的课程也一起更新' : '');
-  if (n < MAX_LESSON) { $('mmNext').hidden = false; $('mmNext').textContent = '进入第 ' + (n + 1) + ' 课（新增 ' + KOCH[n + 1] + '）'; }
-  else { $('mmNext').hidden = true; $('mmUnlockTitle').textContent = '40 课全部掌握'; }
+  $('mmUnlockTitle').textContent = t('mastered', { n });
+  $('mmUnlockSub').textContent = t('masteredSub', { r: avg.toFixed(2) }) + (S.mmSync ? t('syncNote') : '');
+  if (n < MAX_LESSON) { $('mmNext').hidden = false; $('mmNext').textContent = t('nextLesson', { n: n + 1, c: KOCH[n + 1] }); }
+  else { $('mmNext').hidden = true; $('mmUnlockTitle').textContent = t('allMastered'); }
   mmSave();
 }
 $('mmNext').addEventListener('click', () => {
@@ -1039,10 +1175,10 @@ $('mmEnd').addEventListener('click', () => {
   mmStop();
   if (s && s.count) {
     const avg = s.rts.length ? s.rts.reduce((x, y) => x + y, 0) / s.rts.length : 0;
-    toast('本次 ' + s.count + ' 个 · 一次答对 ' + Math.round(s.first / s.count * 100) + '% · 平均 ' + avg.toFixed(2) + ' s');
+    toast(t('sessionToast', { n: s.count, a: Math.round(s.first / s.count * 100), r: avg.toFixed(2) }));
   }
   $('mmUnlock').hidden = true; $('mmCircle').hidden = false;
-  setCircle('idle'); $('mmMsg').className = ''; $('mmMsg').textContent = '已保存到档案';
+  setCircle('idle'); $('mmMsg').className = ''; $('mmMsg').textContent = t('savedArchive');
 });
 
 function renderMM() {
@@ -1052,7 +1188,7 @@ function renderMM() {
   $('mmManBtn').classList.toggle('sel', !S.mmSync);
   $('mmLessonPick').hidden = S.mmSync;
   $('mmLessonPick').value = S.mmLesson;
-  $('mmLessonInfo').textContent = '第 ' + n + ' 课 · ' + (chars.length <= 8 ? chars.join(' ') : 'K 至 ' + KOCH[n] + ' 共 ' + chars.length + ' 个');
+  $('mmLessonInfo').textContent = LN(n) + ' · ' + (chars.length <= 8 ? chars.join(' ') : t('rangeInfo', { c: KOCH[n], k: chars.length }));
   $('mmSpeedInfo').textContent = S.cwpm + ' wpm · ' + S.tone + ' Hz';
   const s = mm.sess;
   $('mmCount').textContent = s ? s.count : 0;
@@ -1095,10 +1231,30 @@ document.addEventListener('visibilitychange', () => {
   if (document.hidden && session) { stopAudio(); cancelAnimationFrame(raf); session = null; show('sSetup'); }
   if (document.hidden && mm.running && !mm.paused) {
     clearTimeout(mm.timer); stopAudio(); mm.paused = true; mmSave(); setCircle('idle');
-    $('mmMsg').className = ''; $('mmMsg').textContent = '已暂停';
+    $('mmMsg').className = ''; $('mmMsg').textContent = t('paused');
   }
 });
+function applyLang() {
+  document.documentElement.lang = LANG === 'zh' ? 'zh-CN' : LANG;
+  document.title = t('appName');
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
+  document.querySelectorAll('[data-dur]').forEach(b => { b.textContent = durLabel(+b.dataset.dur); });
+  document.querySelectorAll('.langPick').forEach(sel => { sel.value = LANG; });
+  fillLessonPick(); fillMMPick();
+  if (!session) $('playHint').textContent = t('playHint');
+  renderSetup();
+  renderMM();
+  if (current === 'sArchive') renderArchive();
+  if (mm.running && !mm.paused && mm.cur && !mm.locked) $('mmMsg').textContent = t('mmListen');
+}
+document.querySelectorAll('.langPick').forEach(sel => {
+  sel.innerHTML = LANGS.map(([v, n]) => '<option value="' + v + '">' + n + '</option>').join('');
+  sel.addEventListener('change', () => { S.lang = sel.value; LANG = sel.value; Store.save(data); applyLang(); });
+});
+LANG = (S.lang && I18N[S.lang]) ? S.lang : detectLang();
 applyTheme();
+applyLang();
 show('sSetup');
 </script>
 </body>

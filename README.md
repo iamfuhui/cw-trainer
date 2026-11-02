@@ -16,6 +16,7 @@
   - 每个字符有错误条：答对 ×0.9，答错 +0.25；错误条越高出现越多
   - 本课全部字符错误条低于 30% 且平均反应不超过 1 秒，提示进入下一课
   - 电脑可直接用键盘作答
+- 界面语言：中文 / English / 日本語，按系统语言自动选择，可在"我的档案"或电脑版顶部切换
 - 日间 / 夜间两种配色
 - 成绩保存在本机浏览器，可导出、导入 JSON 备份
 
@@ -42,7 +43,7 @@
 ```json
 {
   "version": 1,
-  "profile": { "callsign": "BA8BLK" },
+  "profile": { "callsign": "BA8XXX" },
   "settings": { "lesson": 1, "duration": 60, "cwpm": 20, "ewpm": 10, "tone": 600, "theme": "dark" },
   "records": [
     {
@@ -50,7 +51,7 @@
       "lesson": 2, "duration": 60, "cwpm": 20, "ewpm": 10, "tone": 600,
       "sent": "KMUUK MKUUM", "received": "KMUUK MKUUU",
       "correct": 9, "total": 10, "accuracy": 90,
-      "confusions": { "M 听成 U": 1 }
+      "confusions": { "M>U": 1 }
     }
   ]
 }
