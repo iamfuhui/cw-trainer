@@ -63,10 +63,14 @@ select.pick{height:40px;padding:0 10px;border-radius:10px;border:1px solid var(-
 .cursor{color:var(--ac)}
 .keys{display:grid;gap:10px}
 .key{border-radius:16px;border:1px solid var(--bd);background:var(--key);font-weight:700;padding:0;
-  box-shadow:0 1px 0 var(--bd);transition:background .06s}
-.key.down{background:var(--keyOn);transform:translateY(1px)}
+  box-shadow:0 1px 0 var(--bd);transition:transform .1s ease-out,background-color .1s ease-out,box-shadow .1s ease-out}
+.key.down{background:var(--keyOn);transform:translateY(1px) scale(.97);box-shadow:none;transition:none}
+/* 输入落字：新字符从下方浮上，琥珀色短线淡出 */
+.newch{display:inline-block;animation:chRise .18s ease-out,chLine .35s ease-out}
+@keyframes chRise{from{transform:translateY(6px);opacity:.25}to{transform:none;opacity:1}}
+@keyframes chLine{from{box-shadow:0 2px 0 var(--ac)}to{box-shadow:0 2px 0 transparent}}
 .grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.fn{height:60px;border-radius:16px;border:1px solid var(--bd);background:var(--sf);font-size:16px;
+.fn{transition:transform .1s ease-out,background-color .1s ease-out;height:60px;border-radius:16px;border:1px solid var(--bd);background:var(--sf);font-size:16px;
   display:flex;align-items:center;justify-content:center;gap:8px}
 .center{display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--sub);text-align:center}
 
@@ -125,6 +129,15 @@ body.mm .copyOnly{display:none !important}
 .mmCircle small{font-size:14px;color:var(--sub)}
 .mmCircle.wrong{border-color:var(--err);background:var(--errBg);color:var(--err);box-shadow:none;font-weight:700}
 .mmCircle.idle{color:var(--tx);font-weight:700}
+.mmCircle.echo b{font-size:60px;line-height:1;animation:chPop .15s ease-out}
+.mmCircle.good{border-color:var(--ok);color:var(--ok);box-shadow:0 0 0 10px var(--okBg)}
+.mmCircle.bad{border-color:var(--err);background:var(--errBg);color:var(--err);box-shadow:none;animation:chShake .26s ease-out}
+@keyframes chPop{from{transform:scale(.8);opacity:.3}to{transform:none;opacity:1}}
+@keyframes chShake{0%,100%{transform:none}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+@media (prefers-reduced-motion:reduce){
+  .newch,.mmCircle.echo b,.mmCircle.bad{animation:none}
+  .key,.key.down{transform:none;transition:none}
+}
 #mmMsg{font-size:14px;color:var(--sub);text-align:center;min-height:20px}
 #mmMsg.bad{color:var(--err)}
 .mmUnlock{width:100%;max-width:320px;padding:18px;border-radius:16px;border:2px solid var(--ok);background:var(--okBg);
@@ -138,6 +151,7 @@ body.mm .copyOnly{display:none !important}
 .mb .tr i{display:block;height:100%}
 .mb small{font-size:11px;color:var(--sub)}
 .key.good{background:var(--okBg);border-color:var(--ok)}
+.fn.down{background:var(--keyOn);transform:translateY(1px) scale(.98);transition:none}
 .key.bad{background:var(--errBg);border-color:var(--err)}
 
 /* ---------- 桌面布局：宽度 ≥ 900px ---------- */
@@ -636,6 +650,15 @@ function makeText(chars, seconds) {
   return groups;
 }
 
+// 按键"按下"效果：触摸/鼠标按住时保持，松开后回弹；键盘输入时屏幕键同步按一下
+function keyDown(b) { if (b) { clearTimeout(b._up); b._t = performance.now(); b.classList.add('down'); } }
+function keyUp(b) {
+  if (!b) return;
+  const wait = Math.max(0, 90 - (performance.now() - (b._t || 0)));
+  clearTimeout(b._up); b._up = setTimeout(() => b.classList.remove('down'), wait);
+}
+function keyTap(b) { keyDown(b); keyUp(b); }
+
 function buildKeys(chars) { buildKeysInto($('keys'), chars, (ch, b) => press(ch, b)); }
 
 function buildKeysInto(box, chars, handler) {
@@ -651,7 +674,8 @@ function buildKeysInto(box, chars, handler) {
     b.className = 'key mono'; b.textContent = ch;
     b.style.height = h + 'px'; b.style.fontSize = (n <= 3 ? 44 : n <= 8 ? 34 : 26) + 'px';
     b.dataset.ch = ch;
-    b.addEventListener('pointerdown', e => { e.preventDefault(); handler(ch, b); });
+    b.addEventListener('pointerdown', e => { e.preventDefault(); keyDown(b); handler(ch, b); });
+    ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => b.addEventListener(ev, () => keyUp(b)));
     box.appendChild(b);
   });
 }
@@ -660,25 +684,28 @@ function press(ch, el) {
   if (!session) return;
   session.recv.push(ch);
   if (navigator.vibrate) navigator.vibrate(8);
-  if (el) { el.classList.add('down'); setTimeout(() => el.classList.remove('down'), 90); }
-  renderRecv();
+  renderRecv(true);
 }
 
-function renderRecv() {
+function renderRecv(fresh) {
   const r = session.recv;
   $('cnt').textContent = r.length;
   const s = group5(r);
-  if (desk.matches) { $('recv').innerHTML = '<div>' + esc(s) + '<span class="cursor">▏</span></div>'; return; }
+  // 刚输入的字符单独包一层，播放落字效果
+  const fmt = (text, isLast) => fresh && isLast && text.length
+    ? esc(text.slice(0, -1)) + '<span class="newch">' + esc(text.slice(-1)) + '</span>'
+    : esc(text);
+  if (desk.matches) { $('recv').innerHTML = '<div>' + fmt(s, true) + '<span class="cursor">▏</span></div>'; return; }
   // 只显示最后约 22 个字符位置，保持输入区不跳动
   const lines = []; const words = s.split(' ');
   for (let i = 0; i < words.length; i += 2) lines.push(words.slice(i, i + 2).join(' '));
-  $('recv').innerHTML = lines.slice(-2).map((l, i, a) => '<div>' + esc(l) + (i === a.length - 1 ? '<span class="cursor">▏</span>' : '') + '</div>').join('') || '<div><span class="cursor">▏</span></div>';
+  $('recv').innerHTML = lines.slice(-2).map((l, i, a) => '<div>' + fmt(l, i === a.length - 1) + (i === a.length - 1 ? '<span class="cursor">▏</span>' : '') + '</div>').join('') || '<div><span class="cursor">▏</span></div>';
 }
 const esc = s => s.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
 
-$('btnSkip').addEventListener('pointerdown', e => { e.preventDefault(); press('_', null); });
+$('btnSkip').addEventListener('pointerdown', e => { e.preventDefault(); keyTap($('btnSkip')); press('_', null); });
 $('btnBack').addEventListener('pointerdown', e => {
-  e.preventDefault(); if (!session) return; session.recv.pop(); renderRecv();
+  e.preventDefault(); keyTap($('btnBack')); if (!session) return; session.recv.pop(); renderRecv();
 });
 
 function startSession() {
@@ -915,8 +942,14 @@ function mmNext() {
   mmPlay();
 }
 
-function setCircle(state) {
+function setCircle(state, ch) {
   const c = $('mmCircle');
+  if (state === 'good' || state === 'bad') {
+    c.className = 'mmCircle echo ' + state;
+    void c.offsetWidth;                          // 重新触发动画
+    c.innerHTML = '<b class="mono">' + esc(ch) + '</b>';
+    return;
+  }
   c.className = 'mmCircle' + (state === 'wrong' ? ' wrong' : state === 'idle' ? ' idle' : '');
   if (state === 'wrong') c.innerHTML = '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/></svg>再听一次';
   else if (state === 'idle') c.innerHTML = mm.paused ? '点击继续' : '点击开始';
@@ -951,18 +984,20 @@ function mmAnswer(ch, b) {
     mm.locked = true;
     if (s.count % 20 === 0) mmSave(); else Store.save(data);
     renderMM();
-    if (mmMastered()) { mmShowUnlock(); return; }
     clearTimeout(mm.timer);
-    mm.timer = setTimeout(mmNext, 150);
+    if (mmMastered()) { mmShowUnlock(); return; }
+    setCircle('good', ch);
+    $('mmMsg').className = ''; $('mmMsg').textContent = '正确';
+    mm.timer = setTimeout(mmNext, 200);
   } else {
     flashKey(b, 'bad');
     if (mm.firstTry) { MMD.weights[mm.cur] = Math.min(1, wOf(mm.cur) + 0.25); Store.save(data); }
     mm.firstTry = false;
-    setCircle('wrong');
+    setCircle('bad', ch);
     $('mmMsg').className = 'bad'; $('mmMsg').textContent = '按了 ' + ch + '，不对。按对才能继续';
     renderMM();
     clearTimeout(mm.timer);
-    mm.timer = setTimeout(() => { if (mm.running && !mm.paused) mmPlay(); }, 350);
+    mm.timer = setTimeout(() => { if (mm.running && !mm.paused) { setCircle('wrong'); mmPlay(); } }, 320);
   }
 }
 
@@ -1041,11 +1076,15 @@ document.addEventListener('keydown', e => {
   if (tag === 'input' || tag === 'select' || tag === 'textarea') return;
   const k = e.key.length === 1 ? e.key.toUpperCase() : e.key;
   if (current === 'sMM') {
-    if (mm.running && mm.chars.includes(k)) { e.preventDefault(); mmAnswer(k); }
+    if (mm.running && mm.chars.includes(k)) {
+      e.preventDefault();
+      const b = document.querySelector('#mmKeys [data-ch="' + CSS.escape(k) + '"]');
+      keyTap(b); mmAnswer(k, b);
+    }
   } else if (current === 'sPlay' && session) {
-    if (session.chars.includes(k)) { e.preventDefault(); press(k, document.querySelector('#keys [data-ch="' + CSS.escape(k) + '"]')); }
-    else if (k === ' ') { e.preventDefault(); press('_', null); }
-    else if (k === 'Backspace') { e.preventDefault(); session.recv.pop(); renderRecv(); }
+    if (session.chars.includes(k)) { e.preventDefault(); keyTap(document.querySelector('#keys [data-ch="' + CSS.escape(k) + '"]')); press(k); }
+    else if (k === ' ') { e.preventDefault(); keyTap($('btnSkip')); press('_', null); }
+    else if (k === 'Backspace') { e.preventDefault(); keyTap($('btnBack')); session.recv.pop(); renderRecv(); }
   }
 });
 
