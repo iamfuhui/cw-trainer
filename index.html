@@ -66,6 +66,8 @@ select.pick{height:40px;padding:0 10px;border-radius:10px;border:1px solid var(-
 .keys{display:grid;gap:10px}
 .key{border-radius:16px;border:1px solid var(--bd);background:var(--key);font-weight:700;padding:0;
   box-shadow:0 1px 0 var(--bd);transition:transform .1s ease-out,background-color .1s ease-out,box-shadow .1s ease-out}
+.key{position:relative}
+.key .ps{position:absolute;left:0;right:0;bottom:5px;font-size:11px;font-weight:500;letter-spacing:1px;color:var(--sub);pointer-events:none}
 .key.down{background:var(--keyOn);transform:translateY(1px) scale(.97);box-shadow:none;transition:none}
 /* 输入落字：新字符从下方浮上，琥珀色短线淡出 */
 .newch{display:inline-block;animation:chRise .18s ease-out,chLine .35s ease-out}
@@ -544,6 +546,9 @@ const MORSE = {
 const MAX_LESSON = KOCH.length - 1;
 const PASS = 90;
 const lessonChars = n => KOCH.slice(0, n + 1);
+// 程序符号的常用叫法：= 即 BT（-...-）
+const PROSIGN = { '=': 'BT' };
+const dispCh = c => PROSIGN[c] ? c + '[' + PROSIGN[c] + ']' : c;
 
 /* ---------- 存储层：以后换成服务器接口只改这里 ---------- */
 const Store = {
@@ -652,7 +657,7 @@ function fillLessonPick() {
   const sel = $('lessonPick'); sel.innerHTML = '';
   for (let n = 1; n <= MAX_LESSON; n++) {
     const o = document.createElement('option');
-    o.value = n; o.textContent = n === 1 ? t('optFirst') : t('optNew', { n, c: KOCH[n] });
+    o.value = n; o.textContent = n === 1 ? t('optFirst') : t('optNew', { n, c: dispCh(KOCH[n]) });
     sel.appendChild(o);
   }
   sel.value = S.lesson;
@@ -677,7 +682,7 @@ document.querySelectorAll('[data-adj]').forEach(b => b.addEventListener('click',
 
 function renderSetup() {
   $('lessonName').textContent = t('curLesson', { lesson: LN(S.lesson) });
-  $('lessonLetters').textContent = lessonChars(S.lesson).join(' ');
+  $('lessonLetters').textContent = lessonChars(S.lesson).map(dispCh).join(' ');
   $('lessonPick').value = S.lesson;
   document.querySelectorAll('[data-dur]').forEach(b => b.classList.toggle('sel', +b.dataset.dur === S.duration));
   $('v_cwpm').textContent = S.cwpm; $('v_ewpm').textContent = S.ewpm; $('v_tone').textContent = S.tone;
@@ -687,7 +692,7 @@ function renderSetup() {
     '<div class="row" style="font-size:14px;margin-top:8px"><div style="color:var(--sub)">' + fmtDate(r.date) + '</div><div class="mono" style="font-weight:700;color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
   ).join('') : '<div class="hint">' + t('noRecords') + '</div>';
   $('idleInfo').textContent = LN(S.lesson) + ' · ' + durLabel(S.duration) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + S.tone + ' Hz';
-  $('idleLetters').textContent = lessonChars(S.lesson).join(' ');
+  $('idleLetters').textContent = lessonChars(S.lesson).map(dispCh).join(' ');
   $('lastScore').textContent = last ? t('lastScore', { a: last.accuracy, b: Math.max(...mine.map(r => r.accuracy)), c: mine.length }) : '';
 }
 
@@ -802,7 +807,8 @@ function buildKeysInto(box, chars, handler) {
   // 键盘按字母顺序排列，方便找；不按 Koch 顺序
   [...chars].sort().forEach(ch => {
     const b = document.createElement('button');
-    b.className = 'key mono'; b.textContent = ch;
+    b.className = 'key mono'; b.innerHTML = esc(ch) + (PROSIGN[ch] ? '<small class="ps">' + PROSIGN[ch] + '</small>' : '');
+    if (PROSIGN[ch]) b.setAttribute('aria-label', ch + ' ' + PROSIGN[ch]);
     b.style.height = h + 'px'; b.style.fontSize = (n <= 3 ? 44 : n <= 8 ? 34 : 26) + 'px';
     b.dataset.ch = ch;
     b.addEventListener('pointerdown', e => { e.preventDefault(); keyDown(b); handler(ch, b); });
@@ -932,7 +938,7 @@ function finish() {
   $('resMsg').textContent = passed ? t('passed', { p: PASS }) : t('notPassed', { p: PASS });
   const next = $('btnNext');
   if (passed && S.lesson < MAX_LESSON) {
-    next.style.display = ''; next.textContent = t('nextLesson', { n: S.lesson + 1, c: KOCH[S.lesson + 1] });
+    next.style.display = ''; next.textContent = t('nextLesson', { n: S.lesson + 1, c: dispCh(KOCH[S.lesson + 1]) });
     next.onclick = () => { S.lesson++; Store.save(data); show('sSetup'); };
     $('btnAgain').className = 'btn';
   } else {
@@ -997,7 +1003,7 @@ function fillMMPick() {
   const sel = $('mmLessonPick'); sel.innerHTML = '';
   for (let n = 1; n <= MAX_LESSON; n++) {
     const o = document.createElement('option');
-    o.value = n; o.textContent = t('optRange', { n, c: KOCH[n], k: n + 1 });
+    o.value = n; o.textContent = t('optRange', { n, c: dispCh(KOCH[n]), k: n + 1 });
     sel.appendChild(o);
   }
   sel.value = S.mmLesson;
@@ -1157,7 +1163,7 @@ function mmShowUnlock() {
   $('mmUnlock').hidden = false;
   $('mmUnlockTitle').textContent = t('mastered', { n });
   $('mmUnlockSub').textContent = t('masteredSub', { r: avg.toFixed(2) }) + (S.mmSync ? t('syncNote') : '');
-  if (n < MAX_LESSON) { $('mmNext').hidden = false; $('mmNext').textContent = t('nextLesson', { n: n + 1, c: KOCH[n + 1] }); }
+  if (n < MAX_LESSON) { $('mmNext').hidden = false; $('mmNext').textContent = t('nextLesson', { n: n + 1, c: dispCh(KOCH[n + 1]) }); }
   else { $('mmNext').hidden = true; $('mmUnlockTitle').textContent = t('allMastered'); }
   mmSave();
 }
@@ -1188,7 +1194,7 @@ function renderMM() {
   $('mmManBtn').classList.toggle('sel', !S.mmSync);
   $('mmLessonPick').hidden = S.mmSync;
   $('mmLessonPick').value = S.mmLesson;
-  $('mmLessonInfo').textContent = LN(n) + ' · ' + (chars.length <= 8 ? chars.join(' ') : t('rangeInfo', { c: KOCH[n], k: chars.length }));
+  $('mmLessonInfo').textContent = LN(n) + ' · ' + (chars.length <= 8 ? chars.map(dispCh).join(' ') : t('rangeInfo', { c: dispCh(KOCH[n]), k: chars.length }));
   $('mmSpeedInfo').textContent = S.cwpm + ' wpm · ' + S.tone + ' Hz';
   const s = mm.sess;
   $('mmCount').textContent = s ? s.count : 0;
