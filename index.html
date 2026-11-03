@@ -44,7 +44,7 @@ button{cursor:pointer;touch-action:manipulation}
 .btn.primary{height:56px;border:0;background:var(--ac);color:var(--acTx);font-size:16px;font-weight:700}
 .btn.small{height:44px;font-size:14px}
 .row{display:flex;align-items:center;justify-content:space-between;gap:8px}
-.row + .row{margin-top:16px}
+.row + .row,.row + #toneCustom,#toneCustom .row:first-child{margin-top:16px}
 .hint{font-size:12px;color:var(--sub);margin-top:2px}
 .step{display:flex;align-items:center;gap:6px}
 .step button{width:44px;height:44px;border-radius:12px;border:1px solid var(--bd);background:var(--bg);font-size:22px;padding:0}
@@ -272,6 +272,28 @@ body.mm .copyOnly{display:none !important}
         <div class="v mono"><span id="v_tone">600</span><small>Hz</small></div>
         <button data-adj="tone" data-d="50" data-i18n-aria="toneInc" aria-label="升高音调">+</button></div>
     </div>
+    <div class="row">
+      <div style="min-width:0"><div data-i18n="toneVar">音调变换</div><div class="hint" id="toneVarHint"></div></div>
+      <select class="pick" id="toneVarPick" data-i18n-aria="toneVar" aria-label="音调变换" style="flex:none"></select>
+    </div>
+    <div id="toneCustom" hidden>
+      <div class="row">
+        <div data-i18n="toneLow">最低</div>
+        <div class="step"><button data-adj="toneMin" data-d="-50" data-i18n-aria="toneLowDec" aria-label="−">−</button>
+          <div class="v mono"><span id="v_toneMin">450</span><small>Hz</small></div>
+          <button data-adj="toneMin" data-d="50" data-i18n-aria="toneLowInc" aria-label="+">+</button></div>
+      </div>
+      <div class="row">
+        <div data-i18n="toneHigh">最高</div>
+        <div class="step"><button data-adj="toneMax" data-d="-50" data-i18n-aria="toneHighDec" aria-label="−">−</button>
+          <div class="v mono"><span id="v_toneMax">750</span><small>Hz</small></div>
+          <button data-adj="toneMax" data-d="50" data-i18n-aria="toneHighInc" aria-label="+">+</button></div>
+      </div>
+      <div class="row">
+        <div data-i18n="toneEvery">变换频率</div>
+        <select class="pick" id="toneEveryPick" data-i18n-aria="toneEvery" aria-label="变换频率"></select>
+      </div>
+    </div>
     <div style="margin-top:16px"><button class="btn small" id="btnPreview" data-i18n="preview">试听当前设置</button></div>
   </div>
 
@@ -435,6 +457,11 @@ const I18N = {
     duration: '每组时长', sec: '{n} 秒', min: '{n} 分钟',
     cwpm: '字符速度', cwpmHint: '每个字母本身的快慢', ewpm: '有效速度', ewpmHint: '字母之间留多久', tone: '音调', toneHint: '每次加减 50 Hz',
     cwpmDec: '减小字符速度', cwpmInc: '增大字符速度', ewpmDec: '减小有效速度', ewpmInc: '增大有效速度', toneDec: '降低音调', toneInc: '升高音调',
+    toneVar: '音调变换', toneOff: '关闭', toneDaily: '日常', toneContest: '上机比赛', toneHst: 'HST 比赛', toneCustomOpt: '自定义',
+    hintDaily: '每组在当前音调 ±50 Hz 内变化', hintContest: '每组在 500–700 Hz 间随机，像扫频抄不同电台',
+    hintHst: '每组在 700–1000 Hz 间随机，接近 HST 接收测试', hintCustom: '{a}–{b} Hz · {e}',
+    toneLow: '最低', toneHigh: '最高', toneEvery: '变换频率', everyGroup: '每组换', everyChar: '每个字符换',
+    toneLowDec: '降低最低音', toneLowInc: '升高最低音', toneHighDec: '降低最高音', toneHighInc: '升高最高音',
     preview: '试听当前设置', recentLesson: '本课最近成绩', noRecords: '还没有记录', start: '开始听抄', ready: '准备开始',
     readyHint: '本组从以上字符中随机发送，5 个一组', lastScore: '本课上次 {a}% · 最好 {b}% · 共练 {c} 组',
     stop: '停止', yourCopy: '你的抄收', copied: '已抄 {n} 个', playHint: '听到就点，没听出就点"跳过"', getReady: '准备……',
@@ -465,6 +492,11 @@ const I18N = {
     tone: 'Tone', toneHint: 'Steps of 50 Hz',
     cwpmDec: 'Decrease character speed', cwpmInc: 'Increase character speed', ewpmDec: 'Decrease effective speed', ewpmInc: 'Increase effective speed',
     toneDec: 'Lower tone', toneInc: 'Raise tone',
+    toneVar: 'Tone variation', toneOff: 'Off', toneDaily: 'Everyday', toneContest: 'Contest', toneHst: 'HST', toneCustomOpt: 'Custom',
+    hintDaily: 'Varies ±50 Hz around your tone each group', hintContest: 'Random 500–700 Hz per group, like tuning across stations',
+    hintHst: 'Random 700–1000 Hz per group, close to HST reception tests', hintCustom: '{a}–{b} Hz · {e}',
+    toneLow: 'Lowest', toneHigh: 'Highest', toneEvery: 'Change', everyGroup: 'Per group', everyChar: 'Per character',
+    toneLowDec: 'Lower the lowest tone', toneLowInc: 'Raise the lowest tone', toneHighDec: 'Lower the highest tone', toneHighInc: 'Raise the highest tone',
     preview: 'Preview settings', recentLesson: 'Recent scores (this lesson)', noRecords: 'No records yet', start: 'Start', ready: 'Ready',
     readyHint: 'Random 5-character groups from the characters above', lastScore: 'Last {a}% · best {b}% · {c} sessions',
     stop: 'Stop', yourCopy: 'Your copy', copied: '{n} copied', playHint: 'Tap what you hear, or Skip if unsure', getReady: 'Get ready…',
@@ -499,6 +531,11 @@ const I18N = {
     cwpm: '文字速度', cwpmHint: '1文字ごとの送信速度', ewpm: '実効速度', ewpmHint: '文字と文字の間隔', tone: 'トーン', toneHint: '50 Hzずつ調整',
     cwpmDec: '文字速度を下げる', cwpmInc: '文字速度を上げる', ewpmDec: '実効速度を下げる', ewpmInc: '実効速度を上げる',
     toneDec: 'トーンを下げる', toneInc: 'トーンを上げる',
+    toneVar: 'トーン変化', toneOff: 'オフ', toneDaily: '普段', toneContest: 'コンテスト', toneHst: 'HST競技', toneCustomOpt: 'カスタム',
+    hintDaily: 'グループごとに設定トーン±50 Hzで変化', hintContest: 'グループごとに500–700 Hzでランダム（複数局の受信を想定）',
+    hintHst: 'グループごとに700–1000 Hzでランダム（HST受信テストに近い）', hintCustom: '{a}–{b} Hz · {e}',
+    toneLow: '下限', toneHigh: '上限', toneEvery: '変化の単位', everyGroup: 'グループごと', everyChar: '1文字ごと',
+    toneLowDec: '下限を下げる', toneLowInc: '下限を上げる', toneHighDec: '上限を下げる', toneHighInc: '上限を上げる',
     preview: '現在の設定で試聴', recentLesson: 'このレッスンの最近の成績', noRecords: 'まだ記録がありません', start: '受信開始', ready: '準備完了',
     readyHint: '上の文字からランダムに5文字ずつ送信します', lastScore: '前回 {a}% · 最高 {b}% · {c}セット',
     stop: '停止', yourCopy: '受信内容', copied: '{n}文字', playHint: '聞こえたらタップ。わからなければ「スキップ」', getReady: '準備中…',
@@ -566,7 +603,8 @@ const Store = {
     return {
       version: 1,
       profile: { callsign: '' },
-      settings: { lesson: 1, duration: 60, cwpm: 20, ewpm: 10, tone: 600, theme: 'dark', mmSync: true, mmLesson: 1 },
+      settings: { lesson: 1, duration: 60, cwpm: 20, ewpm: 10, tone: 600, theme: 'dark', mmSync: true, mmLesson: 1,
+        toneVar: 'off', toneMin: 450, toneMax: 750, toneEvery: 'group' },
       mm: { weights: {}, rts: {} },        // 反应训练：每个字符的错误条和最近反应时间
       records: []
     };
@@ -660,7 +698,43 @@ const fmtDate = iso => { const d = new Date(iso); return (d.getMonth() + 1) + '-
 const group5 = arr => { const out = []; for (let i = 0; i < arr.length; i += 5) out.push(arr.slice(i, i + 5).join('')); return out.join(' '); };
 
 /* ---------- 1 设置 ---------- */
-const LIMITS = { cwpm: [10, 40], ewpm: [4, 40], tone: [400, 900] };
+const LIMITS = { cwpm: [10, 40], ewpm: [4, 40], tone: [400, 900], toneMin: [300, 1450], toneMax: [350, 1500] };
+
+/* ---------- 音调变换 ---------- */
+const TONE_VARS = [['off', 'toneOff'], ['daily', 'toneDaily'], ['contest', 'toneContest'], ['hst', 'toneHst'], ['custom', 'toneCustomOpt']];
+function toneRange() {
+  switch (S.toneVar) {
+    case 'daily': return [S.tone - 50, S.tone + 50];
+    case 'contest': return [500, 700];
+    case 'hst': return [700, 1000];
+    case 'custom': return [S.toneMin, S.toneMax];
+    default: return [S.tone, S.tone];
+  }
+}
+const toneVaries = () => S.toneVar && S.toneVar !== 'off';
+const toneEveryChar = () => S.toneVar === 'custom' && S.toneEvery === 'char';
+function randTone() {
+  const [a, b] = toneRange();
+  return a + Math.round(Math.random() * (b - a) / 10) * 10;      // 以 10 Hz 为步进
+}
+const toneLabel = () => { const [a, b] = toneRange(); return a === b ? a + ' Hz' : a + '–' + b + ' Hz'; };
+
+function fillTonePicks() {
+  $('toneVarPick').innerHTML = TONE_VARS.map(([v, k]) => '<option value="' + v + '">' + t(k) + '</option>').join('');
+  $('toneEveryPick').innerHTML = '<option value="group">' + t('everyGroup') + '</option><option value="char">' + t('everyChar') + '</option>';
+  $('toneVarPick').value = S.toneVar || 'off';
+  $('toneEveryPick').value = S.toneEvery || 'group';
+}
+$('toneVarPick').addEventListener('change', e => { S.toneVar = e.target.value; Store.save(data); renderSetup(); if (current === 'sMM') renderMM(); });
+$('toneEveryPick').addEventListener('change', e => { S.toneEvery = e.target.value; Store.save(data); renderSetup(); });
+function renderTone() {
+  const v = S.toneVar || 'off';
+  $('toneCustom').hidden = v !== 'custom';
+  $('v_toneMin').textContent = S.toneMin; $('v_toneMax').textContent = S.toneMax;
+  $('toneVarHint').textContent = v === 'daily' ? t('hintDaily') : v === 'contest' ? t('hintContest') : v === 'hst' ? t('hintHst')
+    : v === 'custom' ? t('hintCustom', { a: S.toneMin, b: S.toneMax, e: S.toneEvery === 'char' ? t('everyChar') : t('everyGroup') }) : '';
+  if ($('toneVarPick').value !== v) $('toneVarPick').value = v;
+}
 
 function fillLessonPick() {
   const sel = $('lessonPick'); sel.innerHTML = '';
@@ -686,6 +760,7 @@ document.querySelectorAll('[data-adj]').forEach(b => b.addEventListener('click',
   const k = b.dataset.adj, [lo, hi] = LIMITS[k];
   S[k] = Math.min(hi, Math.max(lo, S[k] + +b.dataset.d));
   if (S.ewpm > S.cwpm) S.ewpm = S.cwpm;           // 有效速度不能超过字符速度
+  if (S.toneMin > S.toneMax - 50) { if (k === 'toneMin') S.toneMax = S.toneMin + 50; else S.toneMin = S.toneMax - 50; }
   Store.save(data); renderSetup(); if (current === 'sMM') renderMM();
 }));
 
@@ -702,12 +777,13 @@ function renderSetup() {
   $('lessonPick').value = S.lesson;
   document.querySelectorAll('[data-dur]').forEach(b => b.classList.toggle('sel', +b.dataset.dur === S.duration));
   $('v_cwpm').textContent = S.cwpm; $('v_ewpm').textContent = S.ewpm; $('v_tone').textContent = S.tone;
+  renderTone();
   const mine = data.records.filter(r => r.lesson === S.lesson && r.type !== 'mm');
   const last = mine[mine.length - 1];
   $('recentList').innerHTML = mine.length ? mine.slice(-5).reverse().map(r =>
     '<div class="row" style="font-size:14px;margin-top:8px"><div style="color:var(--sub)">' + fmtDate(r.date) + '</div><div class="mono" style="font-weight:700;color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
   ).join('') : '<div class="hint">' + t('noRecords') + '</div>';
-  $('idleInfo').textContent = LN(S.lesson) + ' · ' + durLabel(S.duration) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + S.tone + ' Hz';
+  $('idleInfo').textContent = LN(S.lesson) + ' · ' + durLabel(S.duration) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + toneLabel();
   renderLetters($('idleLetters'), lessonChars(S.lesson));
   $('lastScore').textContent = last ? t('lastScore', { a: last.accuracy, b: Math.max(...mine.map(r => r.accuracy)), c: mine.length }) : '';
 }
@@ -744,12 +820,16 @@ function stopAudio() {
 }
 
 // 把一串字符（含空格）排进音频时间线，返回结束时间
-function playText(text, startDelay) {
+// fixedTone：指定音调（反应训练重听时保持同一音调）
+function playText(text, startDelay, fixedTone) {
   const ac = audio();
   stopAudio();
   const { u, cg, wg } = timing(S.cwpm, S.ewpm);
   osc = ac.createOscillator(); gain = ac.createGain();
-  osc.type = 'sine'; osc.frequency.value = S.tone;
+  const vary = fixedTone == null && toneVaries(), perChar = vary && toneEveryChar();
+  const first = fixedTone != null ? fixedTone : vary ? randTone() : S.tone;
+  osc.type = 'sine'; osc.frequency.value = first;
+  const tones = [first];
   gain.gain.value = 0;
   osc.connect(gain).connect(ac.destination);
   const R = 0.005, V = 0.5;                       // 5 ms 渐入渐出，避免咔哒声
@@ -757,7 +837,12 @@ function playText(text, startDelay) {
   const t0 = t;
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
-    if (ch === ' ') { t += wg - cg; continue; }
+    if (ch === ' ') {
+      t += wg - cg;
+      if (vary && !perChar) { const f = randTone(); tones.push(f); osc.frequency.setValueAtTime(f, t - 0.01); }
+      continue;
+    }
+    if (perChar && i > 0) { const f = randTone(); tones.push(f); osc.frequency.setValueAtTime(f, t - 0.01); }
     const code = MORSE[ch];
     for (let j = 0; j < code.length; j++) {
       const d = code[j] === '.' ? u : 3 * u;
@@ -771,7 +856,7 @@ function playText(text, startDelay) {
   }
   osc.start(t0 - 0.01);
   osc.stop(t + 0.1);
-  return { start: t0, end: t };
+  return { start: t0, end: t, tone: first, tones };
 }
 
 $('btnPreview').addEventListener('click', () => {
@@ -868,7 +953,7 @@ function startSession() {
   const tl = playText(text, 1.0);                 // 1 秒准备时间
   session = { chars, groups, recv: [], start: tl.start, end: tl.end, done: false };
   buildKeys(chars);
-  $('playInfo').textContent = LN(S.lesson) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + S.tone + ' Hz';
+  $('playInfo').textContent = LN(S.lesson) + ' · ' + S.cwpm + '/' + S.ewpm + ' wpm · ' + toneLabel();
   $('playHint').textContent = t('getReady');
   renderRecv();
   show('sPlay');
@@ -929,7 +1014,7 @@ function finish() {
     id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
     callsign: (data.profile.callsign || '').toUpperCase(),
     date: new Date().toISOString(),
-    lesson: S.lesson, duration: S.duration, cwpm: S.cwpm, ewpm: S.ewpm, tone: S.tone,
+    lesson: S.lesson, duration: S.duration, cwpm: S.cwpm, ewpm: S.ewpm, tone: S.tone, toneVar: S.toneVar || 'off', toneRange: toneRange(),
     sent: group5(sent), received: group5(recv.slice(0, sent.length)),
     correct, total: sent.length, accuracy: acc, confusions: conf
   };
@@ -1070,7 +1155,7 @@ function mmSave() {
   if (!s || !s.count) return;
   Store.upsertRecord(data, {
     id: s.id, type: 'mm', callsign: (data.profile.callsign || '').toUpperCase(), date: s.date,
-    lesson: s.lesson, cwpm: S.cwpm, tone: S.tone, count: s.count, firstTry: s.first,
+    lesson: s.lesson, cwpm: S.cwpm, tone: S.tone, toneVar: S.toneVar || 'off', toneRange: toneRange(), count: s.count, firstTry: s.first,
     accuracy: Math.round(s.first / s.count * 100),
     avgRt: s.rts.length ? s.rts.reduce((x, y) => x + y, 0) / s.rts.length : 0
   });
@@ -1088,13 +1173,14 @@ function mmPick() {
 }
 
 function mmPlay() {
-  const tl = playText(mm.cur, 0.06);
+  const tl = playText(mm.cur, 0.06, mm.tone);
   mm.end = tl.end;
 }
 
 function mmNext() {
   if (!mm.running) return;
   mm.cur = mmPick(); mm.hist.push(mm.cur); mm.firstTry = true; mm.locked = false;
+  mm.tone = toneVaries() ? randTone() : S.tone;
   setCircle('listen');
   $('mmMsg').className = ''; $('mmMsg').textContent = t('mmListen');
   mmPlay();
@@ -1211,7 +1297,7 @@ function renderMM() {
   $('mmLessonPick').hidden = S.mmSync;
   $('mmLessonPick').value = S.mmLesson;
   $('mmLessonInfo').textContent = LN(n) + ' · ' + (chars.length <= 8 ? chars.map(dispCh).join(' ') : t('rangeInfo', { c: dispCh(KOCH[n]), k: chars.length }));
-  $('mmSpeedInfo').textContent = S.cwpm + ' wpm · ' + S.tone + ' Hz';
+  $('mmSpeedInfo').textContent = S.cwpm + ' wpm · ' + toneLabel();
   const s = mm.sess;
   $('mmCount').textContent = s ? s.count : 0;
   $('mmAcc').textContent = s && s.count ? Math.round(s.first / s.count * 100) + '%' : '–';
@@ -1263,7 +1349,7 @@ function applyLang() {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
   document.querySelectorAll('[data-dur]').forEach(b => { b.textContent = durLabel(+b.dataset.dur); });
   document.querySelectorAll('.langPick').forEach(sel => { sel.value = LANG; });
-  fillLessonPick(); fillMMPick();
+  fillLessonPick(); fillMMPick(); fillTonePicks();
   if (!session) $('playHint').textContent = t('playHint');
   renderSetup();
   renderMM();
