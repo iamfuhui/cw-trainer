@@ -122,11 +122,12 @@ input.cs{height:44px;width:150px;padding:0 12px;border-radius:12px;border:1px so
 .legend{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--errBg);border:1px solid var(--err);vertical-align:-1px;margin-right:6px}
 
 /* 模式切换 */
-.modeTabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;padding:4px;border-radius:14px;
+.modeTabs{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px;padding:4px;border-radius:14px;
   background:var(--sf);border:1px solid var(--bd);flex-grow:1}
 .modeTabs button{height:38px;border-radius:10px;border:0;background:transparent;color:var(--sub);font-size:15px}
 .modeTabs button.sel{background:var(--ac);color:var(--acTx);font-weight:700}
-body.mm .copyOnly{display:none !important}
+body.mm .copyOnly,body.real .copyOnly,body.real .notReal{display:none !important}
+body.real .toneRow{margin-top:0 !important}
 #sSetup > .modeTabs{flex-grow:0}
 
 /* 反应训练 */
@@ -165,6 +166,38 @@ body.mm .copyOnly{display:none !important}
 .key.good{background:var(--okBg);border-color:var(--ok)}
 .fn.down{background:var(--keyOn);transform:translateY(1px) scale(.98);transition:none}
 .key.bad{background:var(--errBg);border-color:var(--err)}
+
+/* 实战练习 */
+#sReal,#sRealPlay,#sRealResult{gap:14px}
+.chips2{display:flex;gap:8px}
+.chips2 .chip{height:40px;width:64px;font-size:14px}
+.realEx{font-size:15px;line-height:1.6;white-space:pre-line;word-break:break-word}
+.rpStats{display:flex;gap:22px;text-align:center}
+.rpStats b{display:block;font-size:20px}
+.rpStats span{font-size:11px;color:var(--sub)}
+.rpItem{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;
+  border:1px solid var(--bd);background:var(--sf);font-size:13px}
+.rpItem .tx{font-size:15px;font-weight:700;min-width:0;word-break:break-word}
+.rpItem.ok{border-color:var(--ok);background:var(--okBg)}
+.rpItem.ok .st{color:var(--ok)}
+.rpItem.bad .st{color:var(--err)}
+.rpItem .st{flex:none;text-align:right}
+.rpItem .sub{color:var(--sub);font-weight:500}
+#rpCircle{width:96px;height:96px;border-radius:48px;box-shadow:0 0 0 8px var(--ring)}
+#rpCircle.done{border-color:var(--bd);color:var(--sub);box-shadow:none}
+.rpIn{display:flex;gap:8px}
+.rpIn input{flex-grow:1;min-width:0;height:52px;padding:0 14px;border-radius:12px;border:2px solid var(--ac);background:var(--sf);
+  font-size:22px;letter-spacing:2px;text-transform:uppercase;outline:none;-webkit-user-select:text;user-select:text}
+.rpIn button{height:52px;padding:0 14px;border-radius:12px;flex:none}
+#rpReplay{border:1px solid var(--bd);background:transparent;font-size:13px;line-height:1.2}
+#rpReplay small{display:block;font-size:11px;color:var(--sub)}
+#rpReplay:disabled{opacity:.45}
+#rpSubmit{border:0;background:var(--ac);color:var(--acTx);font-size:15px;font-weight:700}
+.rrErr{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;
+  background:var(--sf);border:1px solid var(--bd)}
+.rrErr .a{font-size:15px;font-weight:700;word-break:break-word}
+.rrErr .b{font-size:13px;color:var(--err);word-break:break-word}
+.rrErr .w{font-size:12px;color:var(--sub);flex:none}
 
 /* ---------- 桌面布局：宽度 ≥ 900px ---------- */
 .d-only{display:none !important}
@@ -213,7 +246,7 @@ body.mm .copyOnly{display:none !important}
 
 <header class="topbar d-only">
   <div style="display:flex;align-items:center;gap:18px"><div class="title" style="margin:0" data-i18n="appName">CW 练习</div>
-    <div class="modeTabs"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button></div></div>
+    <div class="modeTabs"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button><button data-mode="real" data-i18n="tabReal">实战练习</button></div></div>
   <div style="display:flex;gap:8px">
     <select class="pick langPick" aria-label="Language"></select>
     <button class="btn" data-go="sArchive" data-i18n="archive">我的档案</button>
@@ -225,7 +258,7 @@ body.mm .copyOnly{display:none !important}
 
 <!-- ============ 1 设置 ============ -->
 <section class="screen on" id="sSetup">
-  <div class="modeTabs m-only"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button></div>
+  <div class="modeTabs m-only"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button><button data-mode="real" data-i18n="tabReal">实战练习</button></div>
   <div class="head m-only">
     <div><div class="eyebrow" data-i18n="kochCopy">Koch 听抄练习</div><div class="title" data-i18n="setupTitle">练习设置</div></div>
     <div style="display:flex;gap:8px">
@@ -236,7 +269,7 @@ body.mm .copyOnly{display:none !important}
     </div>
   </div>
 
-  <div class="card lesson">
+  <div class="card lesson notReal">
     <div class="lessonTop">
       <div class="eyebrow" id="lessonName">当前课程 · 第 2 课</div>
       <select class="pick" id="lessonPick" data-i18n-aria="chooseLesson" aria-label="选择课程"></select>
@@ -254,7 +287,7 @@ body.mm .copyOnly{display:none !important}
   </div>
 
   <div class="card">
-    <div class="row">
+    <div class="row notReal">
       <div><div data-i18n="cwpm">字符速度</div><div class="hint" data-i18n="cwpmHint">每个字母本身的快慢</div></div>
       <div class="step"><button data-adj="cwpm" data-d="-1" data-i18n-aria="cwpmDec" aria-label="减小字符速度">−</button>
         <div class="v mono"><span id="v_cwpm">20</span><small>wpm</small></div>
@@ -270,7 +303,7 @@ body.mm .copyOnly{display:none !important}
       <div style="min-width:0"><div data-i18n="groupGap">组间隔</div><div class="hint" data-i18n="groupGapHint">组与组之间的停顿</div></div>
       <select class="pick" id="gapPick" data-i18n-aria="groupGap" aria-label="组间隔" style="flex:none"></select>
     </div>
-    <div class="row">
+    <div class="row toneRow">
       <div><div data-i18n="tone">音调</div><div class="hint" data-i18n="toneHint">每次加减 50 Hz</div></div>
       <div class="step"><button data-adj="tone" data-d="-50" data-i18n-aria="toneDec" aria-label="降低音调">−</button>
         <div class="v mono"><span id="v_tone">600</span><small>Hz</small></div>
@@ -377,7 +410,7 @@ body.mm .copyOnly{display:none !important}
 <!-- ============ 反应训练 ============ -->
 <section class="screen" id="sMM">
   <div class="head m-only">
-    <div class="modeTabs"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button></div>
+    <div class="modeTabs"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button><button data-mode="real" data-i18n="tabReal">实战练习</button></div>
     <button class="round themeBtn" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
   </div>
   <div class="card" style="padding:12px 14px;display:flex;flex-direction:column;gap:10px">
@@ -412,6 +445,102 @@ body.mm .copyOnly{display:none !important}
     <div class="hint" style="margin:0" data-i18n="mmFoot">答错重听，按对才继续 · 每 20 个自动保存</div>
     <button class="btn" id="mmEnd" style="width:auto;height:40px;padding:0 18px;font-size:14px;flex:none" data-i18n="endSession">结束本次</button>
   </div>
+</section>
+
+<!-- ============ 实战练习：设置 ============ -->
+<section class="screen" id="sReal">
+  <div class="head m-only">
+    <div class="modeTabs"><button data-mode="copy" data-i18n="tabCopy">听抄</button><button data-mode="mm" data-i18n="tabMM">反应训练</button><button data-mode="real" data-i18n="tabReal">实战练习</button></div>
+    <button class="round themeBtn" data-i18n-aria="theme" aria-label="切换日间/夜间"></button>
+  </div>
+  <div><div class="eyebrow" data-i18n="realEyebrow">呼号与通联短语 · 仿 RufzXP</div><div class="title" data-i18n="realTitle">实战练习</div></div>
+  <div>
+    <div class="label" data-i18n="realKind">练习内容</div>
+    <div class="grid3" id="realKindPick">
+      <button class="chip" data-kind="call" data-i18n="kindCall">呼号</button>
+      <button class="chip" data-kind="phrase" data-i18n="kindPhrase">通联短语</button>
+      <button class="chip" data-kind="mix" data-i18n="kindMix">混合</button>
+    </div>
+  </div>
+  <div class="card" style="padding:12px 14px">
+    <div class="hint" style="margin:0 0 6px" data-i18n="example">示例</div>
+    <div class="realEx mono" id="realExample"></div>
+  </div>
+  <div class="card">
+    <div class="row">
+      <div><div data-i18n="realWpm">起始速度</div><div class="hint" data-i18n="realWpmHint">答对加快，答错减慢</div></div>
+      <div class="step"><button data-adj="realWpm" data-d="-1" data-i18n-aria="realWpmDec" aria-label="降低起始速度">−</button>
+        <div class="v mono"><span id="v_realWpm">20</span><small>wpm</small></div>
+        <button data-adj="realWpm" data-d="1" data-i18n-aria="realWpmInc" aria-label="提高起始速度">+</button></div>
+    </div>
+    <div class="row">
+      <div data-i18n="realCount">每轮数量</div>
+      <div class="chips2" id="realCountPick">
+        <button class="chip mono" data-count="25">25</button>
+        <button class="chip mono" data-count="50">50</button>
+      </div>
+    </div>
+    <div class="row">
+      <div style="min-width:0"><div data-i18n="realRegion">呼号地区</div><div class="hint" data-i18n="realRegionHint">按前缀规则生成，不含真实呼号库</div></div>
+      <select class="pick" id="realRegionPick" data-i18n-aria="realRegion" aria-label="呼号地区" style="flex:none"></select>
+    </div>
+  </div>
+  <div class="spacer"></div>
+  <div class="last" id="realBest"></div>
+  <button class="btn primary" id="realStart" data-i18n="realStart">开始一轮</button>
+</section>
+
+<!-- ============ 实战练习：进行中 ============ -->
+<section class="screen" id="sRealPlay">
+  <div class="head">
+    <button class="round" id="rpStop" data-i18n-aria="endRound" aria-label="结束本轮">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="2"/></svg>
+    </button>
+    <div class="rpStats">
+      <div><b class="mono"><span id="rpProg">0</span><span style="font-size:13px;color:var(--sub)" id="rpTotal">/50</span></b><span data-i18n="progress">进度</span></div>
+      <div><b class="mono" id="rpWpm" style="color:var(--ac)">20</b><span>wpm</span></div>
+      <div><b class="mono" id="rpScore">0</b><span data-i18n="score">得分</span></div>
+    </div>
+    <div style="width:44px"></div>
+  </div>
+  <div id="rpLastWrap" hidden>
+    <div class="hint" style="margin:0 0 6px" data-i18n="last">上一个</div>
+    <div id="rpLast" style="display:flex;flex-direction:column;gap:6px"></div>
+  </div>
+  <div class="center" style="flex-direction:column;gap:10px;padding:6px 0">
+    <button class="mmCircle" id="rpCircle" data-i18n-aria="replay2" aria-label="重听"></button>
+    <div id="rpMsg"></div>
+  </div>
+  <div class="rpIn">
+    <label for="rpInput" style="position:absolute;left:-9999px" data-i18n="inputLabel">你听到的内容</label>
+    <input id="rpInput" class="mono" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" enterkeyhint="send">
+    <button id="rpReplay"><span data-i18n="replay2">重听</span><small data-i18n="replayHint">得分减半</small></button>
+    <button id="rpSubmit" data-i18n="submit">提交</button>
+  </div>
+  <div class="spacer"></div>
+</section>
+
+<!-- ============ 实战练习：结果 ============ -->
+<section class="screen" id="sRealResult">
+  <div><div class="eyebrow" id="rrInfo"></div><div class="title" data-i18n="roundResult">本轮结果</div></div>
+  <div class="card" style="display:flex;flex-direction:column;gap:14px">
+    <div class="row" style="align-items:flex-end">
+      <div><div class="eyebrow" data-i18n="score">得分</div><div class="mono" id="rrScore" style="font-size:44px;font-weight:700;color:var(--ac)">0</div></div>
+      <div id="rrBest" style="font-size:13px;color:var(--ok);padding-bottom:8px"></div>
+    </div>
+    <div class="grid3 mmStats">
+      <div><b class="mono" id="rrOk">0</b><span data-i18n="allRight">全对</span></div>
+      <div><b class="mono" id="rrMax">0</b><span data-i18n="maxWpm">最高 wpm</span></div>
+      <div><b class="mono" id="rrRep">0</b><span data-i18n="replays">重听次数</span></div>
+    </div>
+  </div>
+  <div>
+    <div class="label" data-i18n="errList">错误清单</div>
+    <div id="rrErrs" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+  <div class="spacer"></div>
+  <button class="btn primary" id="rrAgain" data-i18n="againRound">再来一轮</button>
+  <button class="btn" data-go="sReal" data-i18n="adjustReal">调整设置</button>
 </section>
 
 <!-- ============ 4 我的档案 ============ -->
@@ -455,6 +584,17 @@ body.mm .copyOnly{display:none !important}
 /* ---------- 界面语言 ---------- */
 const I18N = {
   zh: {
+    tabReal: '实战练习', realEyebrow: '呼号与通联短语 · 仿 RufzXP', realTitle: '实战练习', realKind: '练习内容',
+    kindCall: '呼号', kindPhrase: '通联短语', kindMix: '混合', example: '示例',
+    realWpm: '起始速度', realWpmHint: '答对加快，答错减慢', realWpmDec: '降低起始速度', realWpmInc: '提高起始速度',
+    realCount: '每轮数量', realRegion: '呼号地区', realRegionHint: '按前缀规则生成，不含真实呼号库',
+    regCn: '中国为主', regCnOnly: '仅中国', regWorld: '全球', realBest: '本人最好成绩 {s} 分 · 最高 {w} wpm', realStart: '开始一轮',
+    progress: '进度', score: '得分', last: '上一个', rpOk: '正确 +{p} · 速度 ↑', rpBad: '错误 · 速度 ↓',
+    rpListen: '正在播放，可以边听边输入', rpDone: '播放完毕，输入你听到的内容后提交', inputLabel: '你听到的内容',
+    replay2: '重听', replayHint: '得分减半', submit: '提交', endRound: '结束本轮',
+    roundResult: '本轮结果', realInfo: '实战练习 · {k} · {n} 个', newBest: '新的个人最好', allRight: '全对', maxWpm: '最高 wpm',
+    replays: '重听次数', errList: '错误清单', noErr: '全部正确', againRound: '再来一轮', adjustReal: '调整设置',
+    recReal: '实战 · {k} · {n} 个', recScore: '{s} 分', recMax: '最高 {w} wpm',
     appName: 'CW 练习', tabCopy: '听抄', tabMM: '反应训练', archive: '我的档案', theme: '切换日间/夜间',
     kochCopy: 'Koch 听抄练习', setupTitle: '练习设置', chooseLesson: '选择课程', curLesson: '当前课程 · {lesson}',
     lesson: '第 {n} 课', optFirst: '第 1 课（K M）', optNew: '第 {n} 课（新增 {c}）', optRange: '第 {n} 课（K 至 {c}，共 {k} 个）',
@@ -489,6 +629,17 @@ const I18N = {
     csSaved: '呼号已保存', imported: '已导入 {n} 条记录', importFail: '导入失败：文件格式不对'
   },
   en: {
+    tabReal: 'On-air', realEyebrow: 'Callsigns & QSO phrases · RufzXP-style', realTitle: 'On-air practice', realKind: 'Content',
+    kindCall: 'Callsigns', kindPhrase: 'QSO phrases', kindMix: 'Mixed', example: 'Examples',
+    realWpm: 'Starting speed', realWpmHint: 'Speeds up when right, slows down when wrong', realWpmDec: 'Lower starting speed', realWpmInc: 'Raise starting speed',
+    realCount: 'Items per round', realRegion: 'Callsign region', realRegionHint: 'Generated from prefix rules, not a real callsign database',
+    regCn: 'Mostly China', regCnOnly: 'China only', regWorld: 'Worldwide', realBest: 'Your best: {s} pts · top {w} wpm', realStart: 'Start round',
+    progress: 'Progress', score: 'Score', last: 'Previous', rpOk: 'Correct +{p} · faster', rpBad: 'Wrong · slower',
+    rpListen: 'Playing — you can type while listening', rpDone: 'Done — type what you heard and submit', inputLabel: 'What you heard',
+    replay2: 'Replay', replayHint: 'half points', submit: 'Submit', endRound: 'End round',
+    roundResult: 'Round results', realInfo: 'On-air · {k} · {n} items', newBest: 'New personal best', allRight: 'Correct', maxWpm: 'Top wpm',
+    replays: 'Replays', errList: 'Mistakes', noErr: 'No mistakes', againRound: 'Another round', adjustReal: 'Settings',
+    recReal: 'On-air · {k} · {n} items', recScore: '{s} pts', recMax: 'top {w} wpm',
     appName: 'CW Trainer', tabCopy: 'Copy', tabMM: 'Reaction', archive: 'My records', theme: 'Toggle light/dark',
     kochCopy: 'Koch copy practice', setupTitle: 'Settings', chooseLesson: 'Choose lesson', curLesson: 'Current · {lesson}',
     lesson: 'Lesson {n}', optFirst: 'Lesson 1 (K M)', optNew: 'Lesson {n} (+{c})', optRange: 'Lesson {n} (K–{c}, {k} chars)',
@@ -530,7 +681,18 @@ const I18N = {
     csSaved: 'Callsign saved', imported: 'Imported {n} records', importFail: 'Import failed: invalid file'
   },
   ja: {
-    appName: 'CW練習', tabCopy: '受信練習', tabMM: '反応トレーニング', archive: 'マイ記録', theme: 'ライト/ダーク切替',
+    tabReal: '実戦練習', realEyebrow: 'コールサインとQSO定型文 · RufzXP風', realTitle: '実戦練習', realKind: '練習内容',
+    kindCall: 'コールサイン', kindPhrase: 'QSO定型文', kindMix: 'ミックス', example: '例',
+    realWpm: '開始速度', realWpmHint: '正解で速く、不正解で遅く', realWpmDec: '開始速度を下げる', realWpmInc: '開始速度を上げる',
+    realCount: '1ラウンドの数', realRegion: 'コールサインの地域', realRegionHint: 'プリフィックス規則で生成（実在の局リストではありません）',
+    regCn: '中国中心', regCnOnly: '中国のみ', regWorld: '全世界', realBest: '自己ベスト {s} 点 · 最高 {w} wpm', realStart: 'ラウンド開始',
+    progress: '進行', score: '得点', last: '直前', rpOk: '正解 +{p} · 速度 ↑', rpBad: '不正解 · 速度 ↓',
+    rpListen: '再生中。聞きながら入力できます', rpDone: '再生終了。聞こえた内容を入力して送信', inputLabel: '聞こえた内容',
+    replay2: 'もう一度', replayHint: '得点半分', submit: '送信', endRound: 'ラウンド終了',
+    roundResult: 'ラウンド結果', realInfo: '実戦練習 · {k} · {n}問', newBest: '自己ベスト更新', allRight: '全問正解数', maxWpm: '最高 wpm',
+    replays: 'もう一度の回数', errList: '間違いリスト', noErr: '全問正解', againRound: 'もう1ラウンド', adjustReal: '設定を変更',
+    recReal: '実戦 · {k} · {n}問', recScore: '{s} 点', recMax: '最高 {w} wpm',
+    appName: 'CW練習', tabCopy: '受信練習', tabMM: '反応練習', archive: 'マイ記録', theme: 'ライト/ダーク切替',
     kochCopy: 'Koch法 受信練習', setupTitle: '練習設定', chooseLesson: 'レッスンを選択', curLesson: '現在 · {lesson}',
     lesson: 'レッスン{n}', optFirst: 'レッスン1（K M）', optNew: 'レッスン{n}（+{c}）', optRange: 'レッスン{n}（K〜{c}・{k}文字）',
     duration: '1セットの長さ', sec: '{n}秒', min: '{n}分',
@@ -611,7 +773,8 @@ const Store = {
       version: 1,
       profile: { callsign: '' },
       settings: { lesson: 1, duration: 60, cwpm: 20, ewpm: 10, tone: 600, theme: 'dark', mmSync: true, mmLesson: 1,
-        toneVar: 'off', toneMin: 450, toneMax: 750, toneEvery: 'group', groupGap: 2 },
+        toneVar: 'off', toneMin: 450, toneMax: 750, toneEvery: 'group', groupGap: 2,
+        realKind: 'mix', realWpm: 20, realCount: 50, realRegion: 'cn' },
       mm: { weights: {}, rts: {} },        // 反应训练：每个字符的错误条和最近反应时间
       records: []
     };
@@ -677,11 +840,14 @@ const desk = window.matchMedia('(min-width: 900px)');
 let current = 'sSetup';
 function show(id) {
   if (id !== 'sMM' && typeof mm !== 'undefined' && mm.running) mmStop();
+  if (id !== 'sRealPlay' && typeof real !== 'undefined' && real.running) realAbort();
   current = id;
   const d = desk.matches;
+  const isReal = id.startsWith('sReal');
   document.body.classList.toggle('mm', id === 'sMM');
+  document.body.classList.toggle('real', isReal);
   document.querySelectorAll('.modeTabs button').forEach(b =>
-    b.classList.toggle('sel', b.dataset.mode === (id === 'sMM' ? 'mm' : 'copy')));
+    b.classList.toggle('sel', b.dataset.mode === (id === 'sMM' ? 'mm' : isReal ? 'real' : 'copy')));
   document.querySelectorAll('.screen').forEach(s => {
     const on = d ? (s.id === 'sSetup' || s.id === id || (id === 'sSetup' && s.id === 'sIdle'))
                  : (s.id === id);
@@ -691,6 +857,7 @@ function show(id) {
   if (id === 'sArchive') renderArchive();
   if (id === 'sPlay' && session) renderRecv();
   if (id === 'sMM') renderMM();
+  if (id === 'sReal') renderReal();
   if (!d) window.scrollTo(0, 0);
 }
 desk.addEventListener('change', () => show(current));
@@ -705,7 +872,7 @@ const fmtDate = iso => { const d = new Date(iso); return (d.getMonth() + 1) + '-
 const group5 = arr => { const out = []; for (let i = 0; i < arr.length; i += 5) out.push(arr.slice(i, i + 5).join('')); return out.join(' '); };
 
 /* ---------- 1 设置 ---------- */
-const LIMITS = { cwpm: [10, 40], ewpm: [4, 40], tone: [400, 900], toneMin: [300, 1450], toneMax: [350, 1500] };
+const LIMITS = { cwpm: [10, 40], ewpm: [4, 40], tone: [400, 900], toneMin: [300, 1450], toneMax: [350, 1500], realWpm: [10, 60] };
 
 /* ---------- 音调变换 ---------- */
 const TONE_VARS = [['off', 'toneOff'], ['daily', 'toneDaily'], ['contest', 'toneContest'], ['hst', 'toneHst'], ['custom', 'toneCustomOpt']];
@@ -777,7 +944,7 @@ document.querySelectorAll('[data-adj]').forEach(b => b.addEventListener('click',
   S[k] = Math.min(hi, Math.max(lo, S[k] + +b.dataset.d));
   if (S.ewpm > S.cwpm) S.ewpm = S.cwpm;           // 有效速度不能超过字符速度
   if (S.toneMin > S.toneMax - 50) { if (k === 'toneMin') S.toneMax = S.toneMin + 50; else S.toneMin = S.toneMax - 50; }
-  Store.save(data); renderSetup(); if (current === 'sMM') renderMM();
+  Store.save(data); renderSetup(); if (current === 'sMM') renderMM(); if (current === 'sReal') renderReal();
 }));
 
 // 课程字母：每个字符单独成块，不会被拆开；程序符号在下方小字标注
@@ -792,9 +959,9 @@ function renderSetup() {
   renderLetters($('lessonLetters'), lessonChars(S.lesson));
   $('lessonPick').value = S.lesson;
   document.querySelectorAll('[data-dur]').forEach(b => b.classList.toggle('sel', +b.dataset.dur === S.duration));
-  $('v_cwpm').textContent = S.cwpm; $('v_ewpm').textContent = S.ewpm; $('v_tone').textContent = S.tone;
+  $('v_cwpm').textContent = S.cwpm; $('v_ewpm').textContent = S.ewpm; $('v_tone').textContent = S.tone; $('v_realWpm').textContent = S.realWpm;
   renderTone();
-  const mine = data.records.filter(r => r.lesson === S.lesson && r.type !== 'mm');
+  const mine = data.records.filter(r => r.lesson === S.lesson && !r.type);
   const last = mine[mine.length - 1];
   $('recentList').innerHTML = mine.length ? mine.slice(-5).reverse().map(r =>
     '<div class="row" style="font-size:14px;margin-top:8px"><div style="color:var(--sub)">' + fmtDate(r.date) + '</div><div class="mono" style="font-weight:700;color:' + (r.accuracy >= PASS ? 'var(--ok)' : 'var(--tx)') + '">' + r.accuracy + '%</div></div>'
@@ -837,10 +1004,11 @@ function stopAudio() {
 
 // 把一串字符（含空格）排进音频时间线，返回结束时间
 // fixedTone：指定音调（反应训练重听时保持同一音调）
-function playText(text, startDelay, fixedTone) {
+// wpm：指定速度（实战练习用，字符与间隔同速，组间隔用标准 7 个单位）
+function playText(text, startDelay, fixedTone, wpm) {
   const ac = audio();
   stopAudio();
-  const { u, cg, wg } = timing(S.cwpm, S.ewpm);
+  const { u, cg, wg } = wpm ? timing(wpm, wpm) : timing(S.cwpm, S.ewpm);
   osc = ac.createOscillator(); gain = ac.createGain();
   const vary = fixedTone == null && toneVaries(), perChar = vary && toneEveryChar();
   const first = fixedTone != null ? fixedTone : vary ? randTone() : S.tone;
@@ -854,7 +1022,7 @@ function playText(text, startDelay, fixedTone) {
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (ch === ' ') {
-      t += wg * gapFactor() - cg;
+      t += wg * (wpm ? 1 : gapFactor()) - cg;
       if (vary && !perChar) { const f = randTone(); tones.push(f); osc.frequency.setValueAtTime(f, t - 0.01); }
       continue;
     }
@@ -1079,7 +1247,10 @@ function finish() {
 function renderArchive() {
   $('callsign').value = data.profile.callsign || '';
   const list = data.records.slice(-30).reverse();
-  $('recList').innerHTML = list.length ? list.map(r => r.type === 'mm'
+  $('recList').innerHTML = list.length ? list.map(r => r.type === 'real'
+    ? '<div class="rec"><div><div>' + t('recReal', { k: kindLabel(r.kind), n: r.count }) + '</div><div class="hint">' + fmtDate(r.date) + ' · ' + t('recMax', { w: r.maxWpm }) + '</div></div>' +
+      '<div style="text-align:right"><div class="acc mono">' + t('recScore', { s: r.score }) + '</div><div class="hint">' + r.ok + '/' + r.count + '</div></div></div>'
+    : r.type === 'mm'
     ? '<div class="rec"><div><div>' + t('recMM', { lesson: LN(r.lesson), n: r.count }) + '</div><div class="hint">' + fmtDate(r.date) + ' · ' + r.cwpm + ' wpm</div></div>' +
       '<div style="text-align:right"><div class="acc mono">' + r.avgRt.toFixed(2) + ' s</div><div class="hint">' + t('recFirst', { a: r.accuracy }) + '</div></div></div>'
     : '<div class="rec"><div><div>' + t('recCopy', { lesson: LN(r.lesson), w: r.cwpm + '/' + r.ewpm }) + '</div><div class="hint">' + fmtDate(r.date) + '</div></div>' +
@@ -1134,8 +1305,13 @@ $('mmSyncBtn').addEventListener('click', () => { if (!S.mmSync) { S.mmSync = tru
 $('mmManBtn').addEventListener('click', () => { if (S.mmSync) { S.mmSync = false; S.mmLesson = S.lesson; Store.save(data); mmReset(); } });
 
 document.querySelectorAll('.modeTabs button').forEach(b => b.addEventListener('click', () => {
-  if (b.dataset.mode === 'mm') { if (current !== 'sMM') { stopAudio(); cancelAnimationFrame(raf); session = null; show('sMM'); mmStart(); } }
-  else if (current === 'sMM') show('sSetup');
+  const m = b.dataset.mode;
+  const now = current === 'sMM' ? 'mm' : current.startsWith('sReal') ? 'real' : 'copy';
+  if (m === now && !(m === 'copy' && current !== 'sSetup')) return;
+  stopAudio(); cancelAnimationFrame(raf); session = null;
+  if (m === 'mm') { show('sMM'); mmStart(); }
+  else if (m === 'real') show('sReal');
+  else show('sSetup');
 }));
 
 function mmNewSession() {
@@ -1329,6 +1505,216 @@ function renderMM() {
   }
 }
 
+
+/* ---------- 实战练习（仿 RufzXP：呼号与通联短语） ---------- */
+const rnd = a => a[Math.floor(Math.random() * a.length)];
+const LET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const letters = n => Array.from({ length: n }, () => rnd(LET)).join('');
+const digit = () => String(Math.floor(Math.random() * 10));
+// 按前缀规则生成呼号（不是真实呼号库）
+function cnCall() {
+  if (Math.random() < 0.1) return 'BY' + digit() + letters(2);
+  return 'B' + rnd(['A', 'A', 'D', 'G', 'G', 'H', 'H', 'I']) + digit() + letters(Math.random() < 0.7 ? 3 : 2);
+}
+const WORLD = [
+  () => rnd(['JA', 'JH', 'JR', 'JE', 'JF', 'JG', 'JI', 'JJ', 'JO']) + digit() + letters(3),
+  () => rnd(['7K', '7L', '7M', '7N']) + digit() + letters(3),
+  () => rnd(['K', 'W', 'N']) + digit() + letters(Math.random() < 0.5 ? 2 : 3),
+  () => rnd(['AA', 'AB', 'AC', 'AD', 'AE', 'AG', 'AI', 'AJ', 'AK']) + digit() + letters(2),
+  () => rnd(['VE', 'VA']) + digit() + letters(3),
+  () => rnd(['DL', 'DK', 'DJ', 'DO', 'G', 'M', 'F', 'I', 'IK', 'IZ', 'EA', 'OK', 'OM', 'SP', 'SQ', 'UA', 'RA', 'RW', 'UR', 'ON', 'PA', 'PD', 'OH', 'SM', 'LA', 'OZ', 'LZ', 'YO', 'HA', 'S5', '9A', 'OE', 'EI', 'CT', 'SV', 'YL', 'LY', 'ES']) + digit() + letters(Math.random() < 0.5 ? 2 : 3),
+  () => 'HB9' + letters(Math.random() < 0.5 ? 2 : 3),
+  () => rnd(['VK', 'ZL', 'PY', 'LU', 'CE', 'HL', 'DS', 'BV', 'VU', 'YB', 'HS', 'XE', 'ZS', 'UN', 'RA0']),
+];
+function worldCall() {
+  let c = rnd(WORLD)();
+  if (!/\d/.test(c)) c += digit() + letters(Math.random() < 0.5 ? 2 : 3);
+  else if (!/\d[A-Z]+$/.test(c)) c += letters(Math.random() < 0.5 ? 2 : 3);
+  return c;
+}
+function randCall() {
+  const r = S.realRegion;
+  let c = r === 'cnOnly' ? cnCall() : r === 'world' ? (Math.random() < 0.15 ? cnCall() : worldCall()) : (Math.random() < 0.55 ? cnCall() : worldCall());
+  if (Math.random() < 0.05) c += '/P';
+  return c;
+}
+const PH_WORDS = ['CQ', 'DE', 'K', 'R', 'TU', '73', 'GL', 'QRZ?', 'QSL', 'QTH', 'UR', 'RST', '599', '5NN', 'TNX', 'FB', 'OM',
+  'PSE', 'AGN', 'ES', 'NAME', 'OP', 'BK', 'KN', 'SK', 'GM', 'GA', 'GE', 'HW?', 'CPY', 'WX', 'RIG', 'ANT', 'PWR', 'QRP', 'QRM', 'QSB', 'QSO'];
+const PH_NAMES = ['TOM', 'KEN', 'BOB', 'JOE', 'ANNA', 'YUKI', 'LI', 'WANG', 'HANS', 'IVAN'];
+const PH_QTH = ['BEIJING', 'CHENGDU', 'SHANGHAI', 'TOKYO', 'OSAKA', 'BERLIN', 'PARIS', 'ROMA', 'TEXAS', 'SYDNEY'];
+const PH_TPL = [
+  'CQ CQ DE {A} {A} K', 'CQ TEST {A}', '{B} DE {A} K', '{B} UR 599', '{B} 5NN', 'UR 5NN TU', 'TU 73 GL', 'QRZ? DE {A}',
+  'R TNX QSL 73', '599 TU', 'UR RST 599 599', 'TNX FB QSO 73', 'GL ES 73', 'PSE QSL', 'QTH {Q}', 'NAME {N}', 'OP {N}',
+  '{B} DE {A} UR 599 BK', 'TU {B} 73', 'CQ DX DE {A} K', 'R R 5NN TU', 'AGN PSE', 'HW CPY? BK'
+];
+function randPhrase() {
+  if (Math.random() < 0.35) return Array.from({ length: 2 + Math.floor(Math.random() * 2) }, () => rnd(PH_WORDS)).join(' ');
+  const A = randCall(), B = randCall();
+  return rnd(PH_TPL).replace(/\{A\}/g, A).replace(/\{B\}/g, B).replace('{N}', rnd(PH_NAMES)).replace('{Q}', rnd(PH_QTH));
+}
+function randItem(kind) {
+  const k = kind === 'mix' ? (Math.random() < 0.5 ? 'call' : 'phrase') : kind;
+  return k === 'call' ? randCall() : randPhrase();
+}
+const kindLabel = k => t(k === 'call' ? 'kindCall' : k === 'phrase' ? 'kindPhrase' : 'kindMix');
+const normIn = s => s.toUpperCase().replace(/\s+/g, ' ').trim();
+
+const real = { running: false, items: [], idx: 0, wpm: 20, score: 0, ok: 0, replays: 0, maxWpm: 0, log: [], cur: null,
+  replayed: false, tone: 600, playing: false, end: 0, timer: 0, waitNext: false };
+
+function fillRealRegion() {
+  $('realRegionPick').innerHTML = [['cn', 'regCn'], ['cnOnly', 'regCnOnly'], ['world', 'regWorld']]
+    .map(([v, k]) => '<option value="' + v + '">' + t(k) + '</option>').join('');
+  $('realRegionPick').value = S.realRegion || 'cn';
+}
+$('realRegionPick').addEventListener('change', e => { S.realRegion = e.target.value; Store.save(data); renderReal(); });
+$('realKindPick').addEventListener('click', e => {
+  const b = e.target.closest('[data-kind]'); if (!b) return;
+  S.realKind = b.dataset.kind; Store.save(data); renderReal();
+});
+$('realCountPick').addEventListener('click', e => {
+  const b = e.target.closest('[data-count]'); if (!b) return;
+  S.realCount = +b.dataset.count; Store.save(data); renderReal();
+});
+
+function realBestRec() {
+  const rs = data.records.filter(r => r.type === 'real' && !r.partial && r.kind === S.realKind && r.count === S.realCount);
+  return rs.length ? rs.reduce((a, b) => (b.score > a.score ? b : a)) : null;
+}
+function renderReal() {
+  document.querySelectorAll('#realKindPick [data-kind]').forEach(b => b.classList.toggle('sel', b.dataset.kind === S.realKind));
+  document.querySelectorAll('#realCountPick [data-count]').forEach(b => b.classList.toggle('sel', +b.dataset.count === S.realCount));
+  $('v_realWpm').textContent = S.realWpm;
+  $('realRegionPick').value = S.realRegion || 'cn';
+  const ex = S.realKind === 'call' ? [randCall(), randCall(), randCall()].join(' · ')
+    : S.realKind === 'phrase' ? [randPhrase(), randPhrase(), randPhrase()].join('\n')
+    : [randCall(), randCall()].join(' · ') + '\n' + randPhrase() + '\n' + randPhrase();
+  $('realExample').textContent = ex;
+  const b = realBestRec();
+  $('realBest').textContent = b ? t('realBest', { s: b.score, w: b.maxWpm }) : '';
+}
+
+function realStart() {
+  real.items = Array.from({ length: S.realCount }, () => randItem(S.realKind));
+  Object.assign(real, { running: true, idx: 0, wpm: S.realWpm, score: 0, ok: 0, replays: 0, maxWpm: S.realWpm, log: [], waitNext: false });
+  $('rpTotal').textContent = '/' + S.realCount;
+  $('rpLast').innerHTML = ''; $('rpLastWrap').hidden = true;
+  show('sRealPlay');
+  realNext();
+  $('rpInput').focus();
+}
+$('realStart').addEventListener('click', realStart);
+$('rrAgain').addEventListener('click', realStart);
+
+function realStats() {
+  $('rpProg').textContent = Math.min(real.idx + 1, real.items.length);
+  $('rpWpm').textContent = Math.round(real.wpm);
+  $('rpScore').textContent = real.score;
+}
+function realPlay() {
+  const tl = playText(real.cur, 0.12, real.tone, real.wpm);
+  real.end = tl.end; real.playing = true;
+  $('rpCircle').className = 'mmCircle';
+  $('rpCircle').innerHTML = '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7"/><path d="M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+  $('rpMsg').className = 'hint'; $('rpMsg').textContent = t('rpListen');
+  clearTimeout(real.timer);
+  real.timer = setTimeout(() => {
+    real.playing = false;
+    if (!real.running) return;
+    $('rpCircle').className = 'mmCircle done';
+    $('rpMsg').textContent = t('rpDone');
+  }, Math.max(0, (tl.end - audio().currentTime) * 1000) + 50);
+}
+function realNext() {
+  if (!real.running) return;
+  if (real.idx >= real.items.length) { realFinish(); return; }
+  real.cur = real.items[real.idx]; real.replayed = false; real.waitNext = false;
+  real.tone = toneVaries() ? randTone() : S.tone;
+  $('rpReplay').disabled = false;
+  $('rpInput').value = '';
+  realStats();
+  realPlay();
+}
+$('rpReplay').addEventListener('click', () => {
+  if (!real.running || real.replayed || real.waitNext) return;
+  real.replayed = true; real.replays++; $('rpReplay').disabled = true;
+  realPlay(); $('rpInput').focus();
+});
+$('rpCircle').addEventListener('click', () => $('rpReplay').click());
+
+function diffHtml(got, sent) {
+  // 逐字对照，错的或多出的字符标红
+  let h = '';
+  for (let i = 0; i < Math.max(got.length, sent.length); i++) {
+    const g = got[i];
+    if (g === undefined) h += '<span class="err">_</span>';
+    else h += g === sent[i] ? esc(g) : '<span class="err">' + esc(g) + '</span>';
+  }
+  return h;
+}
+function realSubmit() {
+  if (!real.running || real.waitNext) return;
+  const got = normIn($('rpInput').value), sent = real.cur;
+  const okk = got === sent;
+  const w = Math.round(real.wpm);
+  let pts = 0;
+  if (okk) {
+    pts = Math.round(sent.replace(/\s/g, '').length * real.wpm / 10 * (real.replayed ? 0.5 : 1));
+    real.score += pts; real.ok++;
+    real.wpm = Math.min(60, real.wpm * 1.05);
+  } else {
+    real.wpm = Math.max(10, real.wpm * 0.95);
+  }
+  real.maxWpm = Math.max(real.maxWpm, Math.round(real.wpm));
+  real.log.push({ sent, got, ok: okk, wpm: w, replayed: real.replayed });
+  const it = document.createElement('div');
+  it.className = 'rpItem ' + (okk ? 'ok' : 'bad');
+  it.innerHTML = okk
+    ? '<div class="tx mono">' + esc(sent) + '</div><div class="st">' + t('rpOk', { p: pts }) + '</div>'
+    : '<div class="tx mono">' + (got ? diffHtml(got, sent) : '<span class="err">—</span>') + ' <span class="sub">→ ' + esc(sent) + '</span></div><div class="st">' + t('rpBad') + '</div>';
+  $('rpLast').prepend(it);
+  while ($('rpLast').children.length > 2) $('rpLast').lastChild.remove();
+  $('rpLastWrap').hidden = false;
+  real.idx++; real.waitNext = true;
+  stopAudio(); clearTimeout(real.timer);
+  realStats();
+  $('rpInput').value = '';
+  $('rpInput').focus();
+  real.timer = setTimeout(realNext, 450);
+}
+$('rpSubmit').addEventListener('click', realSubmit);
+$('rpInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); realSubmit(); } });
+
+function realAbort() {
+  clearTimeout(real.timer); stopAudio(); real.running = false;
+}
+function realFinish() {
+  realAbort();
+  const n = real.log.length;
+  if (!n) { show('sReal'); return; }
+  const prev = realBestRec();
+  const rec = { id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), type: 'real',
+    callsign: (data.profile.callsign || '').toUpperCase(), date: new Date().toISOString(),
+    kind: S.realKind, count: n, planned: real.items.length, ok: real.ok, score: real.score, startWpm: S.realWpm,
+    maxWpm: real.maxWpm, replays: real.replays, region: S.realRegion, toneVar: S.toneVar || 'off', toneRange: toneRange(),
+    errors: real.log.filter(x => !x.ok).map(x => ({ sent: x.sent, got: x.got, wpm: x.wpm })) };
+  // 只有完整一轮才参与最好成绩比较
+  if (n < real.items.length) rec.partial = true;
+  Store.addRecord(data, rec);
+  $('rrInfo').textContent = t('realInfo', { k: kindLabel(S.realKind), n });
+  $('rrScore').textContent = real.score;
+  $('rrBest').textContent = n === real.items.length && (!prev || real.score > prev.score) ? t('newBest') : '';
+  $('rrOk').textContent = real.ok + '/' + n;
+  $('rrMax').textContent = real.maxWpm;
+  $('rrRep').textContent = real.replays;
+  const errs = rec.errors;
+  $('rrErrs').innerHTML = errs.length ? errs.map(x =>
+    '<div class="rrErr"><div style="min-width:0"><div class="a mono">' + esc(x.sent) + '</div><div class="b mono">' + (x.got ? esc(x.got) : '—') + '</div></div><div class="w mono">' + x.wpm + ' wpm</div></div>'
+  ).join('') : '<div class="empty">' + t('noErr') + '</div>';
+  show('sRealResult');
+}
+$('rpStop').addEventListener('click', () => { if (real.running) realFinish(); else show('sReal'); });
+
 /* ---------- 键盘输入（电脑） ---------- */
 document.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -1353,6 +1739,8 @@ document.addEventListener('dblclick', e => e.preventDefault(), { passive: false 
 document.addEventListener('visibilitychange', () => {
   // 切到后台时中止本组，避免计时和声音错位
   if (document.hidden && session) { stopAudio(); cancelAnimationFrame(raf); session = null; show('sSetup'); }
+  if (document.hidden && real.running) { clearTimeout(real.timer); stopAudio(); }
+  if (!document.hidden && real.running && current === 'sRealPlay') { if (real.waitNext) realNext(); else realPlay(); }
   if (document.hidden && mm.running && !mm.paused) {
     clearTimeout(mm.timer); stopAudio(); mm.paused = true; mmSave(); setCircle('idle');
     $('mmMsg').className = ''; $('mmMsg').textContent = t('paused');
@@ -1365,7 +1753,8 @@ function applyLang() {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
   document.querySelectorAll('[data-dur]').forEach(b => { b.textContent = durLabel(+b.dataset.dur); });
   document.querySelectorAll('.langPick').forEach(sel => { sel.value = LANG; });
-  fillLessonPick(); fillMMPick(); fillTonePicks(); fillGapPick();
+  fillLessonPick(); fillMMPick(); fillTonePicks(); fillGapPick(); fillRealRegion();
+  if (current === 'sReal') renderReal();
   if (!session) $('playHint').textContent = t('playHint');
   renderSetup();
   renderMM();
