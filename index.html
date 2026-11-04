@@ -266,6 +266,10 @@ body.mm .copyOnly{display:none !important}
         <div class="v mono"><span id="v_ewpm">10</span><small>wpm</small></div>
         <button data-adj="ewpm" data-d="1" data-i18n-aria="ewpmInc" aria-label="增大有效速度">+</button></div>
     </div>
+    <div class="row copyOnly">
+      <div style="min-width:0"><div data-i18n="groupGap">组间隔</div><div class="hint" data-i18n="groupGapHint">组与组之间的停顿</div></div>
+      <select class="pick" id="gapPick" data-i18n-aria="groupGap" aria-label="组间隔" style="flex:none"></select>
+    </div>
     <div class="row">
       <div><div data-i18n="tone">音调</div><div class="hint" data-i18n="toneHint">每次加减 50 Hz</div></div>
       <div class="step"><button data-adj="tone" data-d="-50" data-i18n-aria="toneDec" aria-label="降低音调">−</button>
@@ -462,6 +466,7 @@ const I18N = {
     hintHst: '每组在 700–1000 Hz 间随机，接近 HST 接收测试', hintCustom: '{a}–{b} Hz · {e}',
     toneLow: '最低', toneHigh: '最高', toneEvery: '变换频率', everyGroup: '每组换', everyChar: '每个字符换',
     toneLowDec: '降低最低音', toneLowInc: '升高最低音', toneHighDec: '降低最高音', toneHighInc: '升高最高音',
+    groupGap: '组间隔', groupGapHint: '组与组之间的停顿', gapStd: '标准', gapX: '加长 {n} 倍',
     preview: '试听当前设置', recentLesson: '本课最近成绩', noRecords: '还没有记录', start: '开始听抄', ready: '准备开始',
     readyHint: '本组从以上字符中随机发送，5 个一组', lastScore: '本课上次 {a}% · 最好 {b}% · 共练 {c} 组',
     stop: '停止', yourCopy: '你的抄收', copied: '已抄 {n} 个', playHint: '听到就点，没听出就点"跳过"', getReady: '准备……',
@@ -497,6 +502,7 @@ const I18N = {
     hintHst: 'Random 700–1000 Hz per group, close to HST reception tests', hintCustom: '{a}–{b} Hz · {e}',
     toneLow: 'Lowest', toneHigh: 'Highest', toneEvery: 'Change', everyGroup: 'Per group', everyChar: 'Per character',
     toneLowDec: 'Lower the lowest tone', toneLowInc: 'Raise the lowest tone', toneHighDec: 'Lower the highest tone', toneHighInc: 'Raise the highest tone',
+    groupGap: 'Group spacing', groupGapHint: 'Pause between groups', gapStd: 'Standard', gapX: '{n}× longer',
     preview: 'Preview settings', recentLesson: 'Recent scores (this lesson)', noRecords: 'No records yet', start: 'Start', ready: 'Ready',
     readyHint: 'Random 5-character groups from the characters above', lastScore: 'Last {a}% · best {b}% · {c} sessions',
     stop: 'Stop', yourCopy: 'Your copy', copied: '{n} copied', playHint: 'Tap what you hear, or Skip if unsure', getReady: 'Get ready…',
@@ -536,6 +542,7 @@ const I18N = {
     hintHst: 'グループごとに700–1000 Hzでランダム（HST受信テストに近い）', hintCustom: '{a}–{b} Hz · {e}',
     toneLow: '下限', toneHigh: '上限', toneEvery: '変化の単位', everyGroup: 'グループごと', everyChar: '1文字ごと',
     toneLowDec: '下限を下げる', toneLowInc: '下限を上げる', toneHighDec: '上限を下げる', toneHighInc: '上限を上げる',
+    groupGap: 'グループ間隔', groupGapHint: 'グループとグループの間の休止', gapStd: '標準', gapX: '{n}倍に延長',
     preview: '現在の設定で試聴', recentLesson: 'このレッスンの最近の成績', noRecords: 'まだ記録がありません', start: '受信開始', ready: '準備完了',
     readyHint: '上の文字からランダムに5文字ずつ送信します', lastScore: '前回 {a}% · 最高 {b}% · {c}セット',
     stop: '停止', yourCopy: '受信内容', copied: '{n}文字', playHint: '聞こえたらタップ。わからなければ「スキップ」', getReady: '準備中…',
@@ -604,7 +611,7 @@ const Store = {
       version: 1,
       profile: { callsign: '' },
       settings: { lesson: 1, duration: 60, cwpm: 20, ewpm: 10, tone: 600, theme: 'dark', mmSync: true, mmLesson: 1,
-        toneVar: 'off', toneMin: 450, toneMax: 750, toneEvery: 'group' },
+        toneVar: 'off', toneMin: 450, toneMax: 750, toneEvery: 'group', groupGap: 2 },
       mm: { weights: {}, rts: {} },        // 反应训练：每个字符的错误条和最近反应时间
       records: []
     };
@@ -718,6 +725,15 @@ function randTone() {
   return a + Math.round(Math.random() * (b - a) / 10) * 10;      // 以 10 Hz 为步进
 }
 const toneLabel = () => { const [a, b] = toneRange(); return a === b ? a + ' Hz' : a + '–' + b + ' Hz'; };
+
+// 组间隔：只拉长组与组之间的停顿（标准为 7 个单位，开启有效速度时同比例放大）
+const GAPS = [1, 1.5, 2, 3];
+const gapFactor = () => GAPS.includes(+S.groupGap) ? +S.groupGap : 2;
+function fillGapPick() {
+  $('gapPick').innerHTML = GAPS.map(g => '<option value="' + g + '">' + (g === 1 ? t('gapStd') : t('gapX', { n: g })) + '</option>').join('');
+  $('gapPick').value = gapFactor();
+}
+$('gapPick').addEventListener('change', e => { S.groupGap = +e.target.value; Store.save(data); });
 
 function fillTonePicks() {
   $('toneVarPick').innerHTML = TONE_VARS.map(([v, k]) => '<option value="' + v + '">' + t(k) + '</option>').join('');
@@ -838,7 +854,7 @@ function playText(text, startDelay, fixedTone) {
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
     if (ch === ' ') {
-      t += wg - cg;
+      t += wg * gapFactor() - cg;
       if (vary && !perChar) { const f = randTone(); tones.push(f); osc.frequency.setValueAtTime(f, t - 0.01); }
       continue;
     }
@@ -879,7 +895,7 @@ function makeText(chars, seconds) {
       const ch = chars.length > 2 && Math.random() < 0.3 ? newest : chars[Math.floor(Math.random() * chars.length)];
       g.push(ch);
     }
-    let d = g.reduce((s, ch) => s + charDur(ch, u) + cg, 0) + (groups.length ? wg - cg : 0);
+    let d = g.reduce((s, ch) => s + charDur(ch, u) + cg, 0) + (groups.length ? wg * gapFactor() - cg : 0);
     if (groups.length && total + d > seconds) break;
     groups.push(g); total += d;
     if (total > seconds) break;
@@ -1349,7 +1365,7 @@ function applyLang() {
   document.querySelectorAll('[data-i18n-aria]').forEach(el => el.setAttribute('aria-label', t(el.dataset.i18nAria)));
   document.querySelectorAll('[data-dur]').forEach(b => { b.textContent = durLabel(+b.dataset.dur); });
   document.querySelectorAll('.langPick').forEach(sel => { sel.value = LANG; });
-  fillLessonPick(); fillMMPick(); fillTonePicks();
+  fillLessonPick(); fillMMPick(); fillTonePicks(); fillGapPick();
   if (!session) $('playHint').textContent = t('playHint');
   renderSetup();
   renderMM();
